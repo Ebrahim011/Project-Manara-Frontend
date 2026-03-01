@@ -60,6 +60,7 @@ export class ProgramsPageComponent implements OnInit {
       .open(ProgramFormDialogComponent, {
         width: '600px',
         maxWidth: '90vw',
+        data: { departmentId: this.departmentId },
       })
       .afterClosed()
       .subscribe((result) => {

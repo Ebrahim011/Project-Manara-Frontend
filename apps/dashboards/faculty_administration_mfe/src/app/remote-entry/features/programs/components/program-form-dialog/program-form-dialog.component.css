@@ -1,0 +1,209 @@
+/* =====================
+   Dialog Layout
+===================== */
+.program-dialog {
+  display: flex;
+  flex-direction: column;
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* =====================
+   Header
+===================== */
+.program-dialog-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: var(--space-lg) var(--space-xl);
+  border-bottom: 1px solid var(--card-border);
+  gap: var(--space-md);
+}
+
+.program-dialog-icon {
+  width: 2.25rem;
+  height: 2.25rem;
+  background: var(--main-color);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.program-dialog-icon i {
+  font-size: var(--fs-sm);
+  color: #fff;
+}
+
+.program-dialog-title {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.program-dialog-subtitle {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.program-dialog-close {
+  width: 1.5rem;
+  height: 1.5rem;
+  background: transparent;
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.program-dialog-close:hover {
+  background: var(--bg-light);
+  color: var(--text-primary);
+}
+
+/* =====================
+   Body
+===================== */
+.program-dialog-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-xl);
+}
+
+.program-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-lg) var(--space-xl);
+}
+
+.full-width {
+  grid-column: span 2;
+}
+
+/* =====================
+   Form Field
+===================== */
+.program-field-label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  margin-bottom: var(--space-xs);
+  color: var(--text-primary);
+}
+
+.program-field-label i {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+}
+
+.required-star {
+  color: var(--error);
+}
+
+.program-field-input {
+  width: 100%;
+  height: 36px;
+  padding: 0 var(--space-md);
+  font-size: var(--fs-sm);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+  transition: all 0.2s ease;
+}
+
+.program-field-input.textarea {
+  height: auto;
+  min-height: 80px;
+  resize: vertical;
+  padding-top: 8px;
+}
+
+.program-field-input:focus {
+  border-color: var(--main-lighter);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+}
+
+/* =====================
+   Footer
+===================== */
+.program-dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-xl);
+  border-top: 1px solid var(--card-border);
+  background: var(--bg-light);
+}
+
+/* =====================
+   Buttons
+===================== */
+.program-btn {
+  padding: var(--space-sm) var(--space-xl);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.program-btn-cancel {
+  background: var(--card-bg);
+  color: var(--text-secondary);
+  border: 1px solid var(--card-border);
+}
+
+.program-btn-cancel:hover {
+  background: var(--bg-light);
+}
+
+.program-btn-submit {
+  background: var(--main-color);
+  color: #fff;
+}
+
+.program-btn-submit:hover:not(:disabled) {
+  background: var(--main-light);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(15, 23, 43, 0.2);
+}
+
+.program-btn-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* =====================
+   Responsive
+===================== */
+@media (max-width: 767.98px) {
+
+  .program-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .full-width {
+    grid-column: span 1;
+  }
+
+  .program-dialog-footer {
+    flex-direction: column-reverse;
+  }
+
+  .program-btn {
+    width: 100%;
+  }
+}

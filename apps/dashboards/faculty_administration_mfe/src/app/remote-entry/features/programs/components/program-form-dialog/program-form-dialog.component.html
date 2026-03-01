@@ -1,3 +1,125 @@
-<p>
-  program-form-dialog works!
-</p>
+<div class="program-dialog">
+  <!-- ================= Header ================= -->
+  <div class="program-dialog-header">
+    <div class="d-flex align-items-center gap-3 flex-fill">
+      <div class="program-dialog-icon">
+        <i class="fa-solid fa-building-columns"></i>
+      </div>
+      <div class="flex-fill">
+        <h2 class="program-dialog-title">Add program</h2>
+        <p class="program-dialog-subtitle">Fill in the program details</p>
+      </div>
+    </div>
+
+    <button (click)="onCancel()" class="program-dialog-close" type="button">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+
+  <!-- ================= Body ================= -->
+  <div class="program-dialog-body">
+    <form [formGroup]="programForm">
+      <div class="program-form-grid">
+        <!-- Name -->
+        <div class="program-form-field">
+          <label class="program-field-label">
+            <i class="fas fa-building"></i>
+            Name <span class="required-star">*</span>
+          </label>
+
+          <input
+            type="text"
+            class="program-field-input"
+            formControlName="name"
+            placeholder="Enter program name"
+            [class.invalid]="
+              programForm.get('name')?.invalid &&
+              programForm.get('name')?.touched
+            "
+          />
+
+          <app-display-error
+            [control]="programForm.get('name')"
+          ></app-display-error>
+        </div>
+
+        <!-- Code -->
+        <div class="program-form-field">
+          <label class="program-field-label">
+            <i class="fas fa-code"></i>
+            Code
+          </label>
+
+          <input
+            type="text"
+            class="program-field-input"
+            formControlName="code"
+            placeholder="Enter program code"
+          />
+
+          <app-display-error
+            [control]="programForm.get('code')"
+          ></app-display-error>
+        </div>
+
+        <!-- Description -->
+        <div class="program-form-field full-width">
+          <label class="program-field-label">
+            <i class="fas fa-align-left"></i>
+            Description
+          </label>
+
+          <textarea
+            class="program-field-input textarea"
+            formControlName="description"
+            placeholder="Enter description"
+          ></textarea>
+
+          <app-display-error
+            [control]="programForm.get('description')"
+          ></app-display-error>
+        </div>
+
+        <!-- Head of program -->
+        <div class="program-form-field">
+          <label class="program-field-label">
+            <i class="fas fa-user-tie"></i>
+            Credit Hours
+          </label>
+
+          <input
+            type="number"
+            class="program-field-input"
+            formControlName="creditHours"
+            placeholder="Enter credit hours"
+          />
+
+          <app-display-error
+            [control]="programForm.get('creditHours')"
+          ></app-display-error>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- ================= Footer ================= -->
+  <div class="program-dialog-footer">
+    <button
+      type="button"
+      class="program-btn program-btn-cancel"
+      (click)="onCancel()"
+    >
+      Cancel
+    </button>
+
+    <button
+      type="button"
+      class="program-btn program-btn-submit"
+      [disabled]="programForm.invalid"
+      (click)="onSubmit()"
+    >
+      <i class="fa-solid fa-plus"></i>
+      <span>Create</span>
+    </button>
+  </div>
+</div>

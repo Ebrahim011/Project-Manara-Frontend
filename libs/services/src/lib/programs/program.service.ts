@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { ApiClientService } from '../api/api-client.service';
-import { ProgramResponse } from '@project-manara-frontend/models';
+import {
+  ProgramRequest,
+  ProgramResponse,
+} from '@project-manara-frontend/models';
 import { Observable } from 'rxjs';
 import { environment } from 'environments/environment';
 
@@ -16,6 +19,13 @@ export class ProgramService {
   ): Observable<ProgramResponse[]> {
     return this.apiClient.get(
       `${environment.apiUrl}/api/departments/${departmentId}/programs?includeDisabled=${includeDisabled}`,
+    );
+  }
+
+  create(departmentId: number, request: ProgramRequest) {
+    return this.apiClient.post(
+      `${environment.apiUrl}/api/departments/${departmentId}/programs`,
+      request,
     );
   }
 

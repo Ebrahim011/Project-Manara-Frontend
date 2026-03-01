@@ -18,6 +18,7 @@ export * from './lib/departments/responses/department-response';
 export * from './lib/departments/responses/department-detail-respnse';
 
 export * from './lib/programs/responses/program-response';
+export * from './lib/programs/requests/program-request';
 
 export * from './lib/roles/requests/role-request';
 export * from './lib/roles/responses/role-response';
