@@ -1,0 +1,220 @@
+/* =====================
+   Metric Cards (Top Stats)
+===================== */
+.metric-card {
+  background: white;
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  transition: all 0.3s ease;
+  height: 100%;
+}
+
+.metric-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transform: translateY(-3px);
+  border-color: var(--main-color);
+}
+
+.metric-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-lg);
+}
+
+.metric-info {
+  flex: 1;
+}
+
+.metric-label {
+  display: block;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: var(--space-xs);
+}
+
+.metric-number {
+  font-size: var(--fs-4xl);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin: 0;
+  line-height: 1;
+}
+
+.metric-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--fs-2xl);
+}
+
+.bg-primary-light {
+  background: rgba(37, 99, 235, 0.1);
+}
+
+.bg-success-light {
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.bg-warning-light {
+  background: rgba(245, 158, 11, 0.1);
+}
+
+.text-primary {
+  color: var(--main-lighter);
+}
+
+.text-success {
+  color: var(--success);
+}
+
+.text-warning {
+  color: var(--warning);
+}
+
+.metric-footer {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-sm);
+}
+
+.metric-trend {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  padding: 2px var(--space-sm);
+  border-radius: var(--radius-sm);
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.trend-up {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.metric-period {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+}
+
+.metric-detail {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--card-border);
+}
+
+/* =====================
+   Simple Stat Cards
+===================== */
+.simple-stat-card {
+  background: white;
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+  transition: all 0.3s ease;
+  height: 100%;
+}
+
+.simple-stat-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+  border-color: var(--main-color);
+}
+
+.simple-stat-icon {
+  width: 3rem;
+  height: 3rem;
+  background: var(--bg-light);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--fs-2xl);
+  color: var(--main-color);
+  flex-shrink: 0;
+}
+
+.simple-stat-content {
+  flex: 1;
+}
+
+.simple-stat-number {
+  font-size: var(--fs-3xl);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin: 0 0 var(--space-xs) 0;
+  line-height: 1;
+}
+
+.simple-stat-label {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+  margin: 0 0 2px 0;
+}
+
+.simple-stat-meta {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+}
+
+/* =====================
+   Responsive
+===================== */
+@media (max-width: 991.98px) {
+  .metric-number {
+    font-size: var(--fs-3xl);
+  }
+
+  .simple-stat-number {
+    font-size: var(--fs-2xl);
+  }
+}
+
+@media (max-width: 575.98px) {
+
+  .metric-card,
+  .simple-stat-card {
+    padding: var(--space-lg);
+  }
+
+  .metric-number {
+    font-size: var(--fs-2xl);
+  }
+
+  .metric-icon {
+    width: 2rem;
+    height: 2rem;
+    font-size: var(--fs-xl);
+  }
+
+  .simple-stat-card {
+    flex-direction: column;
+    text-align: center;
+    gap: var(--space-md);
+  }
+
+  .simple-stat-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: var(--fs-xl);
+  }
+
+  .simple-stat-number {
+    font-size: var(--fs-xl);
+  }
+}

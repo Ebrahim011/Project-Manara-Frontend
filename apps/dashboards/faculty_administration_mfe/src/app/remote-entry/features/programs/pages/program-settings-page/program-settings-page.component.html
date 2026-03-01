@@ -1,3 +1,156 @@
-<p>
-  program-settings-page works!
-</p>
+<div class="container-fluid px-0">
+  <!-- Settings Form -->
+  <form [formGroup]="programForm" (ngSubmit)="onSave()">
+    <div class="row g-3">
+      <!-- Left Column - Basic Information -->
+      <div class="col-12 col-lg-8">
+        <!-- Basic Information Card -->
+        <div class="settings-card mb-3">
+          <div class="card-header-custom">
+            <div class="header-icon">
+              <i class="fa-solid fa-building"></i>
+            </div>
+            <div>
+              <h5 class="card-title-custom">Basic Information</h5>
+              <p class="card-subtitle-custom">
+                General program details and description
+              </p>
+            </div>
+          </div>
+
+          <div class="card-body-custom">
+            <!-- program Name -->
+            <div class="form-group-custom">
+              <label class="form-label-custom">
+                program Name <span class="required-mark">*</span>
+              </label>
+              <input
+                type="text"
+                class="form-control-custom"
+                formControlName="name"
+                placeholder="Enter program name"
+              />
+              <app-display-error
+                [control]="programForm.get('name')"
+              ></app-display-error>
+            </div>
+
+            <!-- Description -->
+            <div class="form-group-custom">
+              <label class="form-label-custom">
+                Description <span class="required-mark">*</span>
+              </label>
+              <textarea
+                formControlName="description"
+                class="form-control-custom"
+                rows="4"
+                placeholder="Enter program description"
+              ></textarea>
+              <div class="form-hint">
+                Provide a brief description of the program's mission and
+                programs
+              </div>
+              <app-display-error
+                [control]="programForm.get('description')"
+              ></app-display-error>
+            </div>
+
+            <!-- Code -->
+            <div class="form-group-custom">
+              <label class="form-label-custom">
+                program Code <span class="required-mark">*</span>
+              </label>
+              <input
+                type="text"
+                class="form-control-custom"
+                formControlName="code"
+                placeholder="Enter program address"
+              />
+
+              <app-display-error
+                [control]="programForm.get('code')"
+              ></app-display-error>
+            </div>
+
+            <!-- Credit Hours -->
+            <div class="form-group-custom">
+              <label class="form-label-custom">
+                program Credit Hours <span class="required-mark">*</span>
+              </label>
+              <input
+                type="number"
+                class="form-control-custom"
+                formControlName="creditHours"
+                placeholder="Enter program credit hours"
+              />
+
+              <app-display-error
+                [control]="programForm.get('creditHours')"
+              ></app-display-error>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column - Preview & Actions -->
+      <div class="col-12 col-lg-4">
+        <!-- Preview Card -->
+        <div class="settings-card sticky-card">
+          <div class="card-header-custom">
+            <div class="header-icon">
+              <i class="fa-solid fa-eye"></i>
+            </div>
+            <div>
+              <h5 class="card-title-custom">Preview</h5>
+              <p class="card-subtitle-custom">How it will appear</p>
+            </div>
+          </div>
+
+          <div class="card-body-custom">
+            <!-- Preview Content -->
+            <div class="preview-section">
+              <div class="preview-header">
+                <div class="preview-icon">
+                  <i class="fa-solid fa-building"></i>
+                </div>
+                <h6 class="preview-title">
+                  {{ programForm.get('name')?.value || 'program Name' }}
+                </h6>
+              </div>
+
+              <div class="preview-description">
+                {{
+                  programForm.get('description')?.value ||
+                    'program description will appear here.'
+                }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Actions Card -->
+        <div class="settings-card mt-3">
+          <div class="card-body-custom">
+            <div class="actions-section">
+              <button
+                type="submit"
+                class="btn-primary-custom w-100 mb-2"
+                [disabled]="!programForm.valid || !programForm.dirty"
+              >
+                <i class="fa-solid fa-check me-2"></i> Save Changes
+              </button>
+            </div>
+
+            <!-- Form Status -->
+            <div class="form-status mt-3" *ngIf="programForm.dirty">
+              <div class="alert-warning-custom">
+                <i class="fa-solid fa-exclamation-triangle me-2"></i>
+                You have unsaved changes
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

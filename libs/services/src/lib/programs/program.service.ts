@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiClientService } from '../api/api-client.service';
 import {
+  ProgramDetailResponse,
   ProgramRequest,
   ProgramResponse,
 } from '@project-manara-frontend/models';
@@ -22,9 +23,20 @@ export class ProgramService {
     );
   }
 
+  get(id: number): Observable<ProgramDetailResponse> {
+    return this.apiClient.get(`${environment.apiUrl}/api/programs/${id}`);
+  }
+
   create(departmentId: number, request: ProgramRequest) {
     return this.apiClient.post(
       `${environment.apiUrl}/api/departments/${departmentId}/programs`,
+      request,
+    );
+  }
+
+  update(id: number, request: ProgramRequest) {
+    return this.apiClient.put(
+      `${environment.apiUrl}/api/programs/${id}`,
       request,
     );
   }

@@ -1,3 +1,30 @@
-<p>
-  program-detail-page works!
-</p>
+<div class="layout-wrapper">
+  <!-- Sidebar Tabs - يمين -->
+  <div class="tab-sidebar">
+    <ul class="nav nav-pills flex-column">
+      <li hasPermission="Programs:read" class="nav-item">
+        <a
+          class="nav-link"
+          routerLink="overview"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          <i class="fa-solid fa-user me-2"></i>
+          Overview
+        </a>
+      </li>
+
+      <li hasPermission="Programs:update" class="nav-item">
+        <a class="nav-link" routerLink="settings" routerLinkActive="active">
+          <i class="fa-solid fa-shield-halved me-2"></i>
+          Settings
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Content - شمال -->
+  <div class="tab-content-wrapper">
+    <router-outlet></router-outlet>
+  </div>
+</div>
