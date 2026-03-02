@@ -1,32 +1,40 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { PaginatedList, RequestFilters, UniversityUserResponse } from '@project-manara-frontend/models';
-import { HttpErrorService, UniversityUserService } from '@project-manara-frontend/services';
-import { filter, Observable, of, switchMap } from 'rxjs';
+import {
+  PaginatedList,
+  RequestFilters,
+  UniversityUserResponse,
+} from '@project-manara-frontend/models';
+import {
+  HttpErrorService,
+  UniversityUserService,
+} from '@project-manara-frontend/services';
+import { Observable } from 'rxjs';
 import { StaffFormDialogComponent } from '../../components/staff-form-dialog/staff-form-dialog.component';
-import { Store } from '@ngrx/store';
 import { ActivatedRoute } from '@angular/router';
+import { Gender, Religion } from '@project-manara-frontend/enums';
 
 @Component({
   selector: 'app-staffs-page',
   standalone: false,
   templateUrl: './staffs-page.component.html',
-  styleUrls: ['./staffs-page.component.css']
+  styleUrls: ['./staffs-page.component.css'],
 })
 export class StaffsPageComponent implements OnInit {
-
   filters = new RequestFilters();
   staffs$!: Observable<PaginatedList<UniversityUserResponse>>;
   selectedStatus: boolean = false;
   pageSizeOptions: number[] = [5, 10, 25, 50];
   universityId: number;
+
   constructor(
     private httpErrorService: HttpErrorService,
     private universityUserService: UniversityUserService,
     private dialog: MatDialog,
     private route: ActivatedRoute,
   ) {
-    this.universityId = +this.route.parent?.parent?.snapshot.paramMap.get('id')!;
+    this.universityId =
+      +this.route.parent?.parent?.snapshot.paramMap.get('id')!;
   }
 
   ngOnInit(): void {
@@ -34,7 +42,11 @@ export class StaffsPageComponent implements OnInit {
   }
 
   loadStaffs(): void {
-    this.staffs$ = this.universityUserService.getAll(this.universityId, this.filters, this.selectedStatus)
+    this.staffs$ = this.universityUserService.getAll(
+      this.universityId,
+      this.filters,
+      this.selectedStatus,
+    );
   }
 
   onSearch(): void {
@@ -82,7 +94,23 @@ export class StaffsPageComponent implements OnInit {
   }
 
   getEndIndex(response: PaginatedList<UniversityUserResponse>): number {
-    return Math.min(response.pageNumber * this.filters.PageSize, response.totalCount);
+    return Math.min(
+      response.pageNumber * this.filters.PageSize,
+      response.totalCount,
+    );
+  }
+
+  // ✅ Safe role name getter — handles both string[] and RoleResponse[]
+  getRoleName(role: any): string {
+    return role?.name || role || '—';
+  }
+
+  getGenderLabel(value: number): string {
+    return Gender[value] || '—';
+  }
+
+  getReligionLabel(value: number): string {
+    return Religion[value] || '—';
   }
 
   onAddStaff(): void {
@@ -91,22 +119,22 @@ export class StaffsPageComponent implements OnInit {
       maxWidth: '90vw',
       minHeight: '90vh',
       panelClass: 'staff-form-dialog-panel',
-      data: { universityId: this.universityId }
+      data: { universityId: this.universityId },
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) this.loadStaffs();
     });
   }
 
- onDelete(staff: UniversityUserResponse): void {
+  onDelete(staff: UniversityUserResponse): void {
     this.universityUserService.toggleStatus(staff.id).subscribe({
       next: () => {
         this.loadStaffs();
       },
       error: (errors) => {
         this.httpErrorService.handle(errors);
-      }
+      },
     });
   }
 }

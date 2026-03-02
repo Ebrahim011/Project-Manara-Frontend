@@ -1,39 +1,61 @@
 <div class="page-wrapper">
   <div class="form-content">
     <form [formGroup]="form" (ngSubmit)="onSubmit()" autocomplete="off">
-
       <div class="form-grid">
-
         <!-- Full Name -->
         <div class="form-field">
           <label class="field-label">
             <i class="fas fa-user"></i>
-            Full Name
+            Full Name <span class="required-star">*</span>
           </label>
-          <input type="text" class="field-input" [class.invalid]="f['name'].touched && f['name'].invalid"
-            formControlName="name" placeholder="Enter full name" />
+          <input
+            type="text"
+            class="field-input"
+            [class.invalid]="
+              form.get('name')?.invalid && form.get('name')?.touched
+            "
+            formControlName="name"
+            placeholder="Enter full name"
+          />
           <app-display-error [control]="form.get('name')"></app-display-error>
         </div>
 
-        <!-- National ID (SSN) -->
+        <!-- National ID -->
         <div class="form-field">
           <label class="field-label">
             <i class="fas fa-hashtag"></i>
-            National ID (SSN)
+            National ID <span class="required-star">*</span>
           </label>
-          <input type="text" class="field-input" [class.invalid]="f['ssn'].touched && f['ssn'].invalid"
-            formControlName="ssn" placeholder="Enter 14-digit national ID" maxlength="14" />
-          <app-display-error [control]="form.get('ssn')"></app-display-error>
+          <input
+            type="text"
+            class="field-input"
+            [class.invalid]="
+              form.get('nationalId')?.invalid && form.get('nationalId')?.touched
+            "
+            formControlName="nationalId"
+            placeholder="Enter 14-digit national ID"
+            maxlength="14"
+          />
+          <app-display-error
+            [control]="form.get('nationalId')"
+          ></app-display-error>
         </div>
 
         <!-- Email Address -->
         <div class="form-field">
           <label class="field-label">
             <i class="fas fa-envelope"></i>
-            Email Address
+            Email Address <span class="required-star">*</span>
           </label>
-          <input type="email" class="field-input" [class.invalid]="f['email'].touched && f['email'].invalid"
-            formControlName="email" placeholder="example@university.edu" />
+          <input
+            type="email"
+            class="field-input"
+            [class.invalid]="
+              form.get('email')?.invalid && form.get('email')?.touched
+            "
+            formControlName="email"
+            placeholder="example@university.edu"
+          />
           <app-display-error [control]="form.get('email')"></app-display-error>
         </div>
 
@@ -45,28 +67,174 @@
             <span class="label-note">(Leave empty to keep current)</span>
           </label>
           <div class="input-wrapper">
-            <input [type]="showPassword ? 'text' : 'password'" class="field-input"
-              [class.invalid]="f['password'].touched && f['password'].invalid" formControlName="password"
-              placeholder="Leave empty to keep current password" />
-            <button type="button" class="toggle-password" (click)="togglePasswordVisibility()" tabindex="-1">
-              <i [class]="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              class="field-input"
+              [class.invalid]="
+                form.get('password')?.invalid && form.get('password')?.touched
+              "
+              formControlName="password"
+              placeholder="Leave empty to keep current password"
+            />
+            <button
+              type="button"
+              class="toggle-password"
+              (click)="showPassword = !showPassword"
+              tabindex="-1"
+            >
+              <i
+                class="fa-solid"
+                [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"
+              ></i>
             </button>
           </div>
-          <app-display-error [control]="form.get('password')"></app-display-error>
+          <app-display-error
+            [control]="form.get('password')"
+          ></app-display-error>
+        </div>
+
+        <!-- Birth Date -->
+        <div class="form-field">
+          <label class="field-label">
+            <i class="fas fa-calendar"></i>
+            Birth Date <span class="required-star">*</span>
+          </label>
+          <input
+            type="date"
+            class="field-input"
+            [class.invalid]="
+              form.get('birthDate')?.invalid && form.get('birthDate')?.touched
+            "
+            formControlName="birthDate"
+          />
+          <app-display-error
+            [control]="form.get('birthDate')"
+          ></app-display-error>
+        </div>
+
+        <!-- Phone Number -->
+        <div class="form-field">
+          <label class="field-label">
+            <i class="fas fa-phone"></i>
+            Phone Number <span class="required-star">*</span>
+          </label>
+          <input
+            type="tel"
+            class="field-input"
+            [class.invalid]="
+              form.get('phoneNumber')?.invalid &&
+              form.get('phoneNumber')?.touched
+            "
+            formControlName="phoneNumber"
+            placeholder="Enter phone number"
+          />
+          <app-display-error
+            [control]="form.get('phoneNumber')"
+          ></app-display-error>
+        </div>
+
+        <!-- Gender -->
+        <div class="form-field">
+          <label class="field-label">
+            <i class="fas fa-venus-mars"></i>
+            Gender <span class="required-star">*</span>
+          </label>
+          <ng-select
+            [items]="genderOptions"
+            bindLabel="label"
+            bindValue="value"
+            [multiple]="false"
+            [closeOnSelect]="true"
+            [searchable]="true"
+            [clearable]="true"
+            placeholder="Select gender..."
+            formControlName="gender"
+            class="roles-select"
+            [class.invalid]="
+              form.get('gender')?.invalid && form.get('gender')?.touched
+            "
+            [class.has-value]="form.get('gender')?.value"
+            notFoundText="No gender found"
+          >
+            <ng-template ng-option-tmp let-item="item" let-item$="item$">
+              <div class="role-option">
+                <span class="role-checkbox">
+                  <i class="fas fa-check" *ngIf="item$.selected"></i>
+                </span>
+                <span class="role-name">{{ item.label }}</span>
+              </div>
+            </ng-template>
+            <ng-template ng-label-tmp let-item="item">
+              <div class="role-tag">{{ item.label }}</div>
+            </ng-template>
+          </ng-select>
+          <app-display-error [control]="form.get('gender')"></app-display-error>
+        </div>
+
+        <!-- Religion -->
+        <div class="form-field">
+          <label class="field-label">
+            <i class="fas fa-mosque"></i>
+            Religion <span class="required-star">*</span>
+          </label>
+          <ng-select
+            [items]="religionOptions"
+            bindLabel="label"
+            bindValue="value"
+            [multiple]="false"
+            [closeOnSelect]="true"
+            [searchable]="true"
+            [clearable]="true"
+            placeholder="Select religion..."
+            formControlName="religion"
+            class="roles-select"
+            [class.invalid]="
+              form.get('religion')?.invalid && form.get('religion')?.touched
+            "
+            [class.has-value]="form.get('religion')?.value"
+            notFoundText="No religion found"
+          >
+            <ng-template ng-option-tmp let-item="item" let-item$="item$">
+              <div class="role-option">
+                <span class="role-checkbox">
+                  <i class="fas fa-check" *ngIf="item$.selected"></i>
+                </span>
+                <span class="role-name">{{ item.label }}</span>
+              </div>
+            </ng-template>
+            <ng-template ng-label-tmp let-item="item">
+              <div class="role-tag">{{ item.label }}</div>
+            </ng-template>
+          </ng-select>
+          <app-display-error
+            [control]="form.get('religion')"
+          ></app-display-error>
         </div>
 
         <!-- Roles -->
         <div class="form-field">
           <label class="field-label">
             <i class="fas fa-shield-alt"></i>
-            Roles
+            Roles <span class="required-star">*</span>
           </label>
-
-          <ng-select [items]="roles" bindLabel="name" bindValue="name" [multiple]="true" [closeOnSelect]="false"
-            [searchable]="true" [clearable]="true" placeholder="Select roles..."
-            formControlName="roles" class="roles-select" [class.invalid]="f['roles'].touched && f['roles'].invalid"
-            [class.has-value]="f['roles'].value?.length > 0" notFoundText="No roles found"
-            loadingText="Loading roles...">
+          <ng-select
+            [items]="roles"
+            bindLabel="name"
+            bindValue="name"
+            [multiple]="true"
+            [closeOnSelect]="false"
+            [searchable]="true"
+            [clearable]="true"
+            placeholder="Select roles..."
+            formControlName="roles"
+            class="roles-select"
+            [class.invalid]="
+              form.get('roles')?.invalid && form.get('roles')?.touched
+            "
+            [class.has-value]="form.get('roles')?.value?.length > 0"
+            notFoundText="No roles found"
+            loadingText="Loading roles..."
+          >
             <ng-template ng-option-tmp let-item="item" let-item$="item$">
               <div class="role-option">
                 <span class="role-checkbox">
@@ -75,14 +243,13 @@
                 <span class="role-name">{{ item.name }}</span>
               </div>
             </ng-template>
-
             <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
               <div class="role-tag" *ngFor="let item of items">
                 {{ item.name }}
+                <span class="remove-tag" (click)="clear(item.name)">×</span>
               </div>
             </ng-template>
           </ng-select>
-
           <app-display-error [control]="form.get('roles')"></app-display-error>
         </div>
 
@@ -92,35 +259,47 @@
             <i class="fas fa-toggle-on"></i>
             Account Status
           </label>
-          <div class="status-box" [class.active]="!f['isDisabled'].value" [class.inactive]="f['isDisabled'].value">
+          <div
+            class="status-box"
+            [class.active]="!form.get('isDisabled')?.value"
+            [class.inactive]="form.get('isDisabled')?.value"
+          >
             <div class="status-info">
-              <span class="status-indicator" [class.off]="f['isDisabled'].value"></span>
+              <span
+                class="status-indicator"
+                [class.off]="form.get('isDisabled')?.value"
+              ></span>
               <div>
                 <div class="status-label">
-                  {{ f['isDisabled'].value ? 'Disabled' : 'Active' }}
+                  {{ form.get('isDisabled')?.value ? 'Disabled' : 'Active' }}
                 </div>
                 <div class="status-desc">
-                  {{ f['isDisabled'].value ? 'This account is currently suspended' : 'This account is fully operational'
+                  {{
+                    form.get('isDisabled')?.value
+                      ? 'This account is currently suspended'
+                      : 'This account is fully operational'
                   }}
                 </div>
               </div>
             </div>
             <label class="switch">
-              <input type="checkbox" formControlName="isDisabled">
+              <input type="checkbox" formControlName="isDisabled" />
               <span class="slider"></span>
             </label>
           </div>
         </div>
-
       </div>
 
       <!-- Action Buttons -->
       <div class="form-actions">
-        <button type="submit" class="btn btn-primary" [disabled]="form.invalid || !form.dirty">
+        <button
+          type="submit"
+          class="btn btn-primary"
+          [disabled]="form.invalid || !form.dirty"
+        >
           Save Changes
         </button>
       </div>
-
     </form>
   </div>
 </div>

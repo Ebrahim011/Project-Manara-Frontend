@@ -1,18 +1,12 @@
-import { Component, Inject, inject, OnInit } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  Validators,
-  AbstractControl,
-  ValidationErrors,
-} from '@angular/forms';
+import { Component, Inject, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
-import { Store } from '@ngrx/store';
 import { RegexPatternConsts } from '@project-manara-frontend/consts';
 import {
   RoleResponse,
   ScopeDetailResponse,
+  UniversityUserRequest,
 } from '@project-manara-frontend/models';
 import {
   HttpErrorService,
@@ -20,7 +14,8 @@ import {
   UniversityUserService,
 } from '@project-manara-frontend/services';
 import { Observable } from 'rxjs';
-import { filter, switchMap, take, tap } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
+import { Gender, Religion } from '@project-manara-frontend/enums';
 
 @Component({
   selector: 'app-staff-form-dialog',
@@ -33,8 +28,17 @@ export class StaffFormDialogComponent implements OnInit {
   showPassword = false;
   scope$!: Observable<ScopeDetailResponse>;
 
+  religionOptions = Object.entries(Religion)
+    .filter(([, value]) => typeof value === 'number')
+    .map(([key, value]) => ({ label: key, value }));
+
+  genderOptions = Object.entries(Gender)
+    .filter(([, value]) => typeof value === 'number')
+    .map(([key, value]) => ({ label: key, value }));
+
   availableRoles: RoleResponse[] = [];
   universityId: number;
+
   constructor(
     private fb: FormBuilder,
     private universityUserService: UniversityUserService,
@@ -55,7 +59,7 @@ export class StaffFormDialogComponent implements OnInit {
   private initForm(): void {
     this.form = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
-      ssn: ['', [Validators.required]],
+      nationalId: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
       password: [
         '',
@@ -64,8 +68,12 @@ export class StaffFormDialogComponent implements OnInit {
           Validators.pattern(RegexPatternConsts.PASSWORD_PATTERN),
         ],
       ],
-      roles: [[] as string[], [Validators.required]],
+      birthDate: [null, [Validators.required]],
+      gender: [null, [Validators.required]],
+      religion: [null, [Validators.required]],
+      phoneNumber: ['', [Validators.required]],
       isDisabled: [false],
+      roles: [[] as string[], [Validators.required]],
     });
   }
 
@@ -85,15 +93,11 @@ export class StaffFormDialogComponent implements OnInit {
     this.form.markAllAsTouched();
     if (this.form.invalid) return;
 
-    const request = this.form.value;
+    const request: UniversityUserRequest = this.form.value;
 
     this.universityUserService.create(this.universityId, request).subscribe({
-      next: () => {
-        this.dialogRef.close(true);
-      },
-      error: (err) => {
-        this.httpErrorService.handle(err);
-      },
+      next: () => this.dialogRef.close(true),
+      error: (err) => this.httpErrorService.handle(err),
     });
   }
 

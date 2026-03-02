@@ -1,10 +1,8 @@
-<ng-container *ngIf="(staffs$ | async) as response">
+<ng-container *ngIf="staffs$ | async as response">
   <div class="container-fluid px-0">
-
     <!-- Staff Section -->
     <div class="staffs-section">
       <div class="section-card">
-
         <!-- Section Header -->
         <div class="section-header">
           <div>
@@ -17,17 +15,26 @@
             <div class="search-bar-wrapper">
               <div class="search-bar">
                 <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                <input type="text" class="search-input" placeholder="Search by name, email, phone, SSN..."
-                  [(ngModel)]="filters.SearchValue" (change)="onSearch()" />
+                <input
+                  type="text"
+                  class="search-input"
+                  placeholder="Search by name, email, phone, national ID..."
+                  [(ngModel)]="filters.SearchValue"
+                  (change)="onSearch()"
+                />
               </div>
             </div>
 
             <!-- Status Filter -->
             <div class="filter-dropdown-container">
               <div class="custom-select-wrapper">
-                <select class="custom-select" [(ngModel)]="selectedStatus" (ngModelChange)="onStatusFilter()">
-                  <option [value]="false">Active Only</option>
-                  <option [value]="true">All</option>
+                <select
+                  class="custom-select"
+                  [(ngModel)]="selectedStatus"
+                  (ngModelChange)="onStatusFilter()"
+                >
+                  <option [value]="false">All</option>
+                  <option [value]="true">Active Only</option>
                 </select>
                 <i class="fa-solid fa-chevron-down select-icon"></i>
               </div>
@@ -48,7 +55,10 @@
                 <th>Staff Member</th>
                 <th>Email</th>
                 <th>Phone</th>
-                <th>SSN</th>
+                <th>National ID</th>
+                <th>Birth Date</th>
+                <th>Gender</th>
+                <th>Religion</th>
                 <th>Roles</th>
                 <th>Status</th>
                 <th class="text-center">Actions</th>
@@ -56,6 +66,7 @@
             </thead>
             <tbody>
               <tr *ngFor="let staff of response.items">
+                <!-- Staff Member -->
                 <td>
                   <div class="table-cell-with-icon">
                     <a [routerLink]="[staff.id]" class="table-cell-content">
@@ -63,27 +74,100 @@
                     </a>
                   </div>
                 </td>
-                <td><span class="staff-email">{{ staff.email }}</span></td>
-                <td><span class="staff-phone">{{ staff.phone || '—' }}</span></td>
-                <td><span class="staff-ssn">{{ staff.ssn }}</span></td>
+
+                <!-- Email -->
+                <td>
+                  <span class="staff-email">{{ staff.email || '—' }}</span>
+                </td>
+
+                <!-- Phone -->
+                <td>
+                  <span class="staff-phone">{{
+                    staff.phoneNumber || '—'
+                  }}</span>
+                </td>
+
+                <!-- National ID -->
+                <td>
+                  <span class="staff-national-id">{{
+                    staff.nationalId || '—'
+                  }}</span>
+                </td>
+
+                <!-- Birth Date -->
+                <td>
+                  <span class="staff-birth-date">
+                    {{
+                      staff.birthDate
+                        ? (staff.birthDate | date: 'mediumDate')
+                        : '—'
+                    }}
+                  </span>
+                </td>
+
+                <!-- Gender -->
+                <td>
+                  <span class="staff-gender">{{
+                    getGenderLabel(staff.gender)
+                  }}</span>
+                </td>
+
+                <!-- Religion -->
+                <td>
+                  <span class="staff-religion">{{
+                    getReligionLabel(staff.religion)
+                  }}</span>
+                </td>
+
+                <!-- Roles -->
                 <td>
                   <div class="roles-list">
-                    <span class="table-value-badge" *ngFor="let role of staff.roles">
-                      {{ role }}
-                    </span>
-                    <span *ngIf="!staff.roles || staff.roles.length === 0">—</span>
+                    <ng-container
+                      *ngIf="
+                        staff.roles && staff.roles.length > 0;
+                        else noRoles
+                      "
+                    >
+                      <span
+                        class="table-value-badge"
+                        *ngFor="let role of staff.roles"
+                      >
+                        {{ getRoleName(role) }}
+                      </span>
+                    </ng-container>
+                    <ng-template #noRoles>—</ng-template>
                   </div>
                 </td>
+
+                <!-- Status — untouched -->
                 <td>
-                  <span class="table-status-badge status-deleted" *ngIf="staff.isDeleted">Deleted</span>
-                  <span class="table-status-badge status-active" *ngIf="!staff.isDeleted">Active</span>
+                  <span
+                    class="table-status-badge status-deleted"
+                    *ngIf="staff.isDeleted"
+                    >Deleted</span
+                  >
+                  <span
+                    class="table-status-badge status-active"
+                    *ngIf="!staff.isDeleted"
+                    >Active</span
+                  >
                 </td>
+
+                <!-- Actions -->
                 <td>
                   <div class="table-actions">
-                    <a [routerLink]="[staff.id]" class="table-action-btn btn-primary" title="Edit Staff">
+                    <a
+                      [routerLink]="[staff.id]"
+                      class="table-action-btn btn-primary"
+                      title="Edit Staff"
+                    >
                       <i class="fa-solid fa-pen"></i>
                     </a>
-                    <button class="table-action-btn btn-danger" title="Delete Staff" (click)="onDelete(staff)">
+                    <button
+                      class="table-action-btn btn-danger"
+                      title="Delete Staff"
+                      (click)="onDelete(staff)"
+                    >
                       <i class="fa-solid fa-trash"></i>
                     </button>
                   </div>
@@ -92,7 +176,7 @@
 
               <!-- Empty State -->
               <tr *ngIf="response.items.length === 0">
-                <td colspan="7">
+                <td colspan="10">
                   <div class="table-empty-state">
                     <div class="table-empty-icon">
                       <i class="fa-solid fa-user-slash"></i>
@@ -108,21 +192,25 @@
           </table>
         </div>
 
-        <!-- ✅ Pagination - ظاهر دايماً لو فيه data -->
+        <!-- Pagination -->
         <div class="table-pagination" *ngIf="response.items.length > 0">
-
           <!-- Left: Info + Page Size -->
           <div class="pagination-left">
             <div class="table-pagination-info">
-              Showing {{ getStartIndex(response) }} to {{ getEndIndex(response) }}
-              of {{ response.totalCount }} staff members
+              Showing {{ getStartIndex(response) }} to
+              {{ getEndIndex(response) }} of {{ response.totalCount }} staff
+              members
             </div>
 
             <!-- Page Size Dropdown -->
             <div class="page-size-wrapper">
               <span class="page-size-label">Rows per page:</span>
               <div class="custom-select-wrapper page-size-select">
-                <select class="custom-select" [(ngModel)]="filters.PageSize" (change)="onPageSizeChange()">
+                <select
+                  class="custom-select"
+                  [(ngModel)]="filters.PageSize"
+                  (change)="onPageSizeChange()"
+                >
                   <option *ngFor="let size of pageSizeOptions" [ngValue]="size">
                     {{ size }}
                   </option>
@@ -135,37 +223,56 @@
           <!-- Right: Page Controls -->
           <div class="table-pagination-controls">
             <!-- First Page -->
-            <button class="table-pagination-btn" [disabled]="!response.hasPreviousPage"
-              (click)="goToPage(1, response.totalPages)" title="First Page">
+            <button
+              class="table-pagination-btn"
+              [disabled]="!response.hasPreviousPage"
+              (click)="goToPage(1, response.totalPages)"
+              title="First Page"
+            >
               <i class="fa-solid fa-angles-left"></i>
             </button>
 
             <!-- Previous -->
-            <button class="table-pagination-btn" [disabled]="!response.hasPreviousPage"
-              (click)="goToPage(filters.PageNumber - 1, response.totalPages)" title="Previous Page">
+            <button
+              class="table-pagination-btn"
+              [disabled]="!response.hasPreviousPage"
+              (click)="goToPage(filters.PageNumber - 1, response.totalPages)"
+              title="Previous Page"
+            >
               <i class="fa-solid fa-chevron-left"></i>
             </button>
 
             <!-- Page Numbers -->
-            <button *ngFor="let page of getPages(response.totalPages)" class="table-pagination-btn"
-              [class.active]="page === filters.PageNumber" (click)="goToPage(page, response.totalPages)">
+            <button
+              *ngFor="let page of getPages(response.totalPages)"
+              class="table-pagination-btn"
+              [class.active]="page === filters.PageNumber"
+              (click)="goToPage(page, response.totalPages)"
+            >
               {{ page }}
             </button>
 
             <!-- Next -->
-            <button class="table-pagination-btn" [disabled]="!response.hasNextPage"
-              (click)="goToPage(filters.PageNumber + 1, response.totalPages)" title="Next Page">
+            <button
+              class="table-pagination-btn"
+              [disabled]="!response.hasNextPage"
+              (click)="goToPage(filters.PageNumber + 1, response.totalPages)"
+              title="Next Page"
+            >
               <i class="fa-solid fa-chevron-right"></i>
             </button>
 
             <!-- Last Page -->
-            <button class="table-pagination-btn" [disabled]="!response.hasNextPage"
-              (click)="goToPage(response.totalPages, response.totalPages)" title="Last Page">
+            <button
+              class="table-pagination-btn"
+              [disabled]="!response.hasNextPage"
+              (click)="goToPage(response.totalPages, response.totalPages)"
+              title="Last Page"
+            >
               <i class="fa-solid fa-angles-right"></i>
             </button>
           </div>
         </div>
-
       </div>
     </div>
   </div>
