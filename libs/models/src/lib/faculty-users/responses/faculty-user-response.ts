@@ -1,10 +1,15 @@
+import { Gender, Religion } from '@project-manara-frontend/enums';
+
 export interface FacultyUserResponse {
-  id: number
-  name: string
-  ssn: string
-  email: string,
-  phone : string,
-  isDisabled: boolean
-  isDeleted: boolean
-  roles: string[]
+  id: number;
+  name: string;
+  nationalId: string;
+  email: string;
+  birthDate: Date | null;
+  gender: Gender;
+  religion: Religion;
+  phoneNumber: string;
+  isDisabled: boolean;
+  isDeleted: boolean;
+  roles: string[];
 }

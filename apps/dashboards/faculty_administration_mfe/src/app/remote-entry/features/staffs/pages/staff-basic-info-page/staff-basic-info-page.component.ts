@@ -9,7 +9,7 @@ import {
 import {
   FacultyUserService,
   HttpErrorService,
-  ScopeService
+  ScopeService,
 } from '@project-manara-frontend/services';
 import { ToastrService } from 'ngx-toastr';
 import { Subject, forkJoin, takeUntil } from 'rxjs';
@@ -18,10 +18,9 @@ import { Subject, forkJoin, takeUntil } from 'rxjs';
   selector: 'app-staff-basic-info-page',
   standalone: false,
   templateUrl: './staff-basic-info-page.component.html',
-  styleUrls: ['./staff-basic-info-page.component.css']
+  styleUrls: ['./staff-basic-info-page.component.css'],
 })
 export class StaffBasicInfoPageComponent implements OnInit, OnDestroy {
-
   form!: FormGroup;
   showPassword = false;
 
@@ -36,8 +35,8 @@ export class StaffBasicInfoPageComponent implements OnInit, OnDestroy {
     private scopeService: ScopeService,
     private facultyUserService: FacultyUserService,
     private httpErrorService: HttpErrorService,
-    private toastrService : ToastrService,
-  ) { }
+    private toastrService: ToastrService,
+  ) {}
 
   ngOnInit(): void {
     this.staffId = +this.route.parent!.snapshot.params['id'];
@@ -55,17 +54,16 @@ export class StaffBasicInfoPageComponent implements OnInit, OnDestroy {
       name: ['', [Validators.required, Validators.minLength(3)]],
       ssn: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
-      password: ['',[Validators.pattern(RegexPatternConsts.PASSWORD_PATTERN)]],
+      password: ['', [Validators.pattern(RegexPatternConsts.PASSWORD_PATTERN)]],
       isDisabled: [false],
-      roles: [[], [Validators.required]]
+      roles: [[], [Validators.required]],
     });
   }
 
   private loadData(): void {
-
     forkJoin({
       staff: this.facultyUserService.get(this.staffId),
-      scope: this.scopeService.get('faculty')
+      scope: this.scopeService.get('faculty'),
     })
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -75,22 +73,21 @@ export class StaffBasicInfoPageComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           this.httpErrorService.handle(error);
-        }
+        },
       });
   }
 
   private populateForm(staff: FacultyUserResponse): void {
-    this.form.patchValue({
-      name: staff.name || '',
-      ssn: staff.ssn || '',
-      email: staff.email || '',
-      password: '',
-      isDisabled: staff.isDisabled || false,
-      roles: staff.roles?.map((r: any) => r.name || r) || []
-    });
-
-    this.form.markAsPristine();
-    this.form.markAsUntouched();
+    // this.form.patchValue({
+    //   name: staff.name || '',
+    //   ssn: staff.ssn || '',
+    //   email: staff.email || '',
+    //   password: '',
+    //   isDisabled: staff.isDisabled || false,
+    //   roles: staff.roles?.map((r: any) => r.name || r) || []
+    // });
+    // this.form.markAsPristine();
+    // this.form.markAsUntouched();
   }
 
   get f() {
@@ -109,7 +106,8 @@ export class StaffBasicInfoPageComponent implements OnInit, OnDestroy {
 
     const formValue = this.form.value;
 
-    this.facultyUserService.update(this.staffId, formValue)
+    this.facultyUserService
+      .update(this.staffId, formValue)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (updatedStaff) => {
@@ -118,8 +116,7 @@ export class StaffBasicInfoPageComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           this.httpErrorService.handle(error);
-        }
+        },
       });
   }
-
 }
