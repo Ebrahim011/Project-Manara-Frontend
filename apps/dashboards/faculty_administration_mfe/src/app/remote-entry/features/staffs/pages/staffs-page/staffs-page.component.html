@@ -48,7 +48,7 @@
                 <input
                   type="text"
                   class="search-input"
-                  placeholder="Search by name, email, phone, SSN..."
+                  placeholder="Search by name, email, phone, national ID..."
                   [(ngModel)]="filters.SearchValue"
                   (change)="onSearch()"
                 />
@@ -89,7 +89,10 @@
                 <th>Staff Member</th>
                 <th>Email</th>
                 <th>Phone</th>
-                <th>SSN</th>
+                <th>National ID</th>
+                <th>Birth Date</th>
+                <th>Gender</th>
+                <th>Religion</th>
                 <th>Roles</th>
                 <th>Status</th>
                 <th class="text-center">Actions</th>
@@ -97,6 +100,7 @@
             </thead>
             <tbody>
               <tr *ngFor="let staff of response.items">
+                <!-- Staff Member -->
                 <td>
                   <div class="table-cell-with-icon">
                     <a
@@ -108,28 +112,72 @@
                     </a>
                   </div>
                 </td>
+
+                <!-- Email -->
                 <td>
-                  <span class="staff-email">{{ staff.email }}</span>
+                  <span class="staff-email">{{ staff.email || '—' }}</span>
                 </td>
-                <!-- <td>
-                  <span class="staff-phone">{{ staff.phone || '—' }}</span>
-                </td>
+
+                <!-- Phone -->
                 <td>
-                  <span class="staff-ssn">{{ staff.ssn }}</span>
-                </td> -->
+                  <span class="staff-phone">{{
+                    staff.phoneNumber || '—'
+                  }}</span>
+                </td>
+
+                <!-- National ID -->
+                <td>
+                  <span class="staff-national-id">{{
+                    staff.nationalId || '—'
+                  }}</span>
+                </td>
+
+                <!-- Birth Date -->
+                <td>
+                  <span class="staff-birth-date">
+                    {{
+                      staff.birthDate
+                        ? (staff.birthDate | date: 'mediumDate')
+                        : '—'
+                    }}
+                  </span>
+                </td>
+
+                <!-- Gender -->
+                <td>
+                  <span class="staff-gender">{{
+                    getGenderLabel(staff.gender)
+                  }}</span>
+                </td>
+
+                <!-- Religion -->
+                <td>
+                  <span class="staff-religion">{{
+                    getReligionLabel(staff.religion)
+                  }}</span>
+                </td>
+
+                <!-- Roles -->
                 <td>
                   <div class="roles-list">
-                    <span
-                      class="table-value-badge"
-                      *ngFor="let role of staff.roles"
+                    <ng-container
+                      *ngIf="
+                        staff.roles && staff.roles.length > 0;
+                        else noRoles
+                      "
                     >
-                      {{ role }}
-                    </span>
-                    <span *ngIf="!staff.roles || staff.roles.length === 0"
-                      >—</span
-                    >
+                      <span
+                        class="table-value-badge"
+                        *ngFor="let role of staff.roles"
+                      >
+                        {{ getRoleName(role) }}
+                      </span>
+                    </ng-container>
+                    <ng-template #noRoles>—</ng-template>
                   </div>
                 </td>
+
+                <!-- Status — untouched -->
                 <td>
                   <span
                     class="table-status-badge status-deleted"
@@ -142,6 +190,8 @@
                     >Active</span
                   >
                 </td>
+
+                <!-- Actions -->
                 <td>
                   <div class="table-actions">
                     <a
@@ -166,7 +216,7 @@
 
               <!-- Empty State -->
               <tr *ngIf="response.items.length === 0">
-                <td colspan="7">
+                <td colspan="10">
                   <div class="table-empty-state">
                     <div class="table-empty-icon">
                       <i class="fa-solid fa-user-slash"></i>
@@ -182,7 +232,7 @@
           </table>
         </div>
 
-        <!-- ✅ Pagination - ظاهر دايماً لو فيه data -->
+        <!-- Pagination -->
         <div class="table-pagination" *ngIf="response.items.length > 0">
           <!-- Left: Info + Page Size -->
           <div class="pagination-left">

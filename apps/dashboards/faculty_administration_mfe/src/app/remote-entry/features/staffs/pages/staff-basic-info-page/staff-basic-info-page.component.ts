@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { RegexPatternConsts } from '@project-manara-frontend/consts';
+import { Gender, Religion } from '@project-manara-frontend/enums';
 import {
   FacultyUserResponse,
   RoleResponse,
@@ -25,6 +26,14 @@ export class StaffBasicInfoPageComponent implements OnInit, OnDestroy {
   showPassword = false;
 
   roles: RoleResponse[] = [];
+
+  religionOptions = Object.entries(Religion)
+    .filter(([, value]) => typeof value === 'number')
+    .map(([key, value]) => ({ label: key, value }));
+
+  genderOptions = Object.entries(Gender)
+    .filter(([, value]) => typeof value === 'number')
+    .map(([key, value]) => ({ label: key, value }));
 
   private staffId!: number;
   private destroy$ = new Subject<void>();
@@ -52,9 +61,13 @@ export class StaffBasicInfoPageComponent implements OnInit, OnDestroy {
   private initForm(): void {
     this.form = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
-      ssn: ['', [Validators.required]],
+      nationalId: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.pattern(RegexPatternConsts.PASSWORD_PATTERN)]],
+      birthDate: [null, [Validators.required]],
+      phoneNumber: ['', [Validators.required]],
+      gender: [null, [Validators.required]],
+      religion: [null, [Validators.required]],
       isDisabled: [false],
       roles: [[], [Validators.required]],
     });
@@ -78,16 +91,20 @@ export class StaffBasicInfoPageComponent implements OnInit, OnDestroy {
   }
 
   private populateForm(staff: FacultyUserResponse): void {
-    // this.form.patchValue({
-    //   name: staff.name || '',
-    //   ssn: staff.ssn || '',
-    //   email: staff.email || '',
-    //   password: '',
-    //   isDisabled: staff.isDisabled || false,
-    //   roles: staff.roles?.map((r: any) => r.name || r) || []
-    // });
-    // this.form.markAsPristine();
-    // this.form.markAsUntouched();
+    this.form.patchValue({
+      name: staff.name || '',
+      nationalId: staff.nationalId || '',
+      email: staff.email || '',
+      password: '',
+      birthDate: staff.birthDate || null,
+      phoneNumber: staff.phoneNumber || '',
+      gender: staff.gender ?? null,
+      religion: staff.religion ?? null,
+      isDisabled: staff.isDisabled || false,
+      roles: staff.roles?.map((r: any) => r.name || r) || [],
+    });
+    this.form.markAsPristine();
+    this.form.markAsUntouched();
   }
 
   get f() {

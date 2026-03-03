@@ -5,6 +5,7 @@ import {
   PaginatedList,
   RequestFilters,
 } from '@project-manara-frontend/models';
+import { Gender, Religion } from '@project-manara-frontend/enums';
 import {
   FacultyUserService,
   HttpErrorService,
@@ -26,6 +27,7 @@ export class StaffsPageComponent implements OnInit {
   selectedStatus: boolean = false;
   pageSizeOptions: number[] = [5, 10, 25, 50];
   facultyId$ = this.store.select(selectFacultyId);
+
   constructor(
     private httpErrorService: HttpErrorService,
     private facultyUserService: FacultyUserService,
@@ -95,6 +97,18 @@ export class StaffsPageComponent implements OnInit {
       response.pageNumber * this.filters.PageSize,
       response.totalCount,
     );
+  }
+
+  getGenderLabel(value: number): string {
+    return Gender[value] || '—';
+  }
+
+  getReligionLabel(value: number): string {
+    return Religion[value] || '—';
+  }
+
+  getRoleName(role: any): string {
+    return role?.name || role || '—';
   }
 
   onAddStaff(): void {
