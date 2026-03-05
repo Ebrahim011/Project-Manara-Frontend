@@ -52,19 +52,20 @@
             ></app-display-error>
           </div>
 
-          <!-- SSN -->
+          <!-- National ID -->
           <div class="form-field">
             <label class="field-label">
               <i class="fas fa-hashtag"></i>
-              SSN <span class="required-star">*</span>
+              National ID <span class="required-star">*</span>
             </label>
             <input
               type="text"
               class="field-input"
               [class.invalid]="
-                form.get('ssn')?.invalid && form.get('ssn')?.touched
+                form.get('nationalId')?.invalid &&
+                form.get('nationalId')?.touched
               "
-              formControlName="ssn"
+              formControlName="nationalId"
               placeholder="Enter 14-digit national ID"
               maxlength="14"
             />
@@ -74,7 +75,7 @@
                       font-size: var(--fs-xs);
                       color: var(--error);
                       line-height: 1.3;"
-              [control]="form.get('ssn')"
+              [control]="form.get('nationalId')"
             ></app-display-error>
           </div>
 
@@ -141,13 +142,152 @@
             ></app-display-error>
           </div>
 
+          <!-- Birth Date -->
+          <div class="form-field">
+            <label class="field-label">
+              <i class="fas fa-calendar"></i>
+              Birth Date <span class="required-star">*</span>
+            </label>
+            <input
+              type="date"
+              class="field-input"
+              [class.invalid]="
+                form.get('birthDate')?.invalid && form.get('birthDate')?.touched
+              "
+              formControlName="birthDate"
+            />
+            <app-display-error
+              errorMessageStyle="  display: block;
+                      margin-top: 3px;
+                      font-size: var(--fs-xs);
+                      color: var(--error);
+                      line-height: 1.3;"
+              [control]="form.get('birthDate')"
+            ></app-display-error>
+          </div>
+
+          <!-- Phone Number -->
+          <div class="form-field">
+            <label class="field-label">
+              <i class="fas fa-phone"></i>
+              Phone Number <span class="required-star">*</span>
+            </label>
+            <input
+              type="tel"
+              class="field-input"
+              [class.invalid]="
+                form.get('phoneNumber')?.invalid &&
+                form.get('phoneNumber')?.touched
+              "
+              formControlName="phoneNumber"
+              placeholder="Enter phone number"
+            />
+            <app-display-error
+              errorMessageStyle="  display: block;
+                      margin-top: 3px;
+                      font-size: var(--fs-xs);
+                      color: var(--error);
+                      line-height: 1.3;"
+              [control]="form.get('phoneNumber')"
+            ></app-display-error>
+          </div>
+
+          <!-- Gender -->
+          <div class="form-field">
+            <label class="field-label">
+              <i class="fas fa-venus-mars"></i>
+              Gender <span class="required-star">*</span>
+            </label>
+            <ng-select
+              [items]="genderOptions"
+              bindLabel="label"
+              bindValue="value"
+              [multiple]="false"
+              [closeOnSelect]="true"
+              [searchable]="true"
+              [clearable]="true"
+              placeholder="Select gender..."
+              formControlName="gender"
+              class="roles-select"
+              [class.invalid]="
+                form.get('gender')?.invalid && form.get('gender')?.touched
+              "
+              [class.has-value]="form.get('gender')?.value"
+              notFoundText="No gender found"
+            >
+              <ng-template ng-option-tmp let-item="item" let-item$="item$">
+                <div class="role-option">
+                  <span class="role-checkbox">
+                    <i class="fas fa-check" *ngIf="item$.selected"></i>
+                  </span>
+                  <span class="role-name">{{ item.label }}</span>
+                </div>
+              </ng-template>
+              <ng-template ng-label-tmp let-item="item">
+                <div class="role-tag">{{ item.label }}</div>
+              </ng-template>
+            </ng-select>
+            <app-display-error
+              errorMessageStyle="  display: block;
+                      margin-top: 3px;
+                      font-size: var(--fs-xs);
+                      color: var(--error);
+                      line-height: 1.3;"
+              [control]="form.get('gender')"
+            ></app-display-error>
+          </div>
+
+          <!-- Religion -->
+          <div class="form-field">
+            <label class="field-label">
+              <i class="fas fa-mosque"></i>
+              Religion <span class="required-star">*</span>
+            </label>
+            <ng-select
+              [items]="religionOptions"
+              bindLabel="label"
+              bindValue="value"
+              [multiple]="false"
+              [closeOnSelect]="true"
+              [searchable]="true"
+              [clearable]="true"
+              placeholder="Select religion..."
+              formControlName="religion"
+              class="roles-select"
+              [class.invalid]="
+                form.get('religion')?.invalid && form.get('religion')?.touched
+              "
+              [class.has-value]="form.get('religion')?.value"
+              notFoundText="No religion found"
+            >
+              <ng-template ng-option-tmp let-item="item" let-item$="item$">
+                <div class="role-option">
+                  <span class="role-checkbox">
+                    <i class="fas fa-check" *ngIf="item$.selected"></i>
+                  </span>
+                  <span class="role-name">{{ item.label }}</span>
+                </div>
+              </ng-template>
+              <ng-template ng-label-tmp let-item="item">
+                <div class="role-tag">{{ item.label }}</div>
+              </ng-template>
+            </ng-select>
+            <app-display-error
+              errorMessageStyle="  display: block;
+                      margin-top: 3px;
+                      font-size: var(--fs-xs);
+                      color: var(--error);
+                      line-height: 1.3;"
+              [control]="form.get('religion')"
+            ></app-display-error>
+          </div>
+
           <!-- Roles -->
           <div class="form-field">
             <label class="field-label">
               <i class="fas fa-shield-alt"></i>
               Roles <span class="required-star">*</span>
             </label>
-
             <ng-select
               [items]="availableRoles"
               bindLabel="name"
@@ -174,7 +314,6 @@
                   <span class="role-name">{{ item.name }}</span>
                 </div>
               </ng-template>
-
               <ng-template
                 ng-multi-label-tmp
                 let-items="items"
@@ -186,7 +325,6 @@
                 </div>
               </ng-template>
             </ng-select>
-
             <app-display-error
               errorMessageStyle="  display: block;
                       margin-top: 3px;

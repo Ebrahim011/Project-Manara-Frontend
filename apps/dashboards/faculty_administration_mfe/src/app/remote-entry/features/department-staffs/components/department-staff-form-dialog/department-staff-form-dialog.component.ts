@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { Gender, Religion } from '@project-manara-frontend/enums';
 import {
   RoleResponse,
   ScopeDetailResponse,
@@ -24,6 +25,15 @@ export class DepartmentStaffFormDialogComponent implements OnInit {
   scope$!: Observable<ScopeDetailResponse>;
   availableRoles: RoleResponse[] = [];
   showPassword = false;
+
+  religionOptions = Object.entries(Religion)
+    .filter(([, value]) => typeof value === 'number')
+    .map(([key, value]) => ({ label: key, value }));
+
+  genderOptions = Object.entries(Gender)
+    .filter(([, value]) => typeof value === 'number')
+    .map(([key, value]) => ({ label: key, value }));
+
   constructor(
     private fb: FormBuilder,
     private scopeService: ScopeService,
@@ -41,7 +51,7 @@ export class DepartmentStaffFormDialogComponent implements OnInit {
   private initForm(): void {
     this.form = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
-      ssn: ['', [Validators.required]],
+      nationalId: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
       password: [
         '',
@@ -51,7 +61,11 @@ export class DepartmentStaffFormDialogComponent implements OnInit {
           Validators.pattern(RegexPatternConsts.PASSWORD_PATTERN),
         ],
       ],
-      roles: [[] as string[], Validators.required],
+      birthDate: [null, [Validators.required]],
+      phoneNumber: ['', [Validators.required]],
+      gender: [null, [Validators.required]],
+      religion: [null, [Validators.required]],
+      roles: [[] as string[], [Validators.required]],
       isDisabled: [false],
     });
   }
@@ -63,13 +77,13 @@ export class DepartmentStaffFormDialogComponent implements OnInit {
       }),
     );
   }
+
   getSelectedRoles(): string[] {
     return this.form.get('roles')?.value || [];
   }
 
   onSubmit(): void {
     this.form.markAllAsTouched();
-
     if (this.form.invalid) return;
 
     const request = this.form.value;

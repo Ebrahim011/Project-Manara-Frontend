@@ -1,14 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  Validators,
-  AbstractControl,
-  ValidationErrors,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { RegexPatternConsts } from '@project-manara-frontend/consts';
+import { Gender, Religion } from '@project-manara-frontend/enums';
 import {
   RoleResponse,
   ScopeDetailResponse,
@@ -33,8 +28,17 @@ export class StaffFormDialogComponent implements OnInit {
   showPassword = false;
   scope$!: Observable<ScopeDetailResponse>;
 
+  religionOptions = Object.entries(Religion)
+    .filter(([, value]) => typeof value === 'number')
+    .map(([key, value]) => ({ label: key, value }));
+
+  genderOptions = Object.entries(Gender)
+    .filter(([, value]) => typeof value === 'number')
+    .map(([key, value]) => ({ label: key, value }));
+
   availableRoles: RoleResponse[] = [];
   facultyId$ = this.store.select(selectFacultyId);
+
   constructor(
     private fb: FormBuilder,
     private facultyUserService: FacultyUserService,
@@ -52,7 +56,7 @@ export class StaffFormDialogComponent implements OnInit {
   private initForm(): void {
     this.form = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
-      ssn: ['', [Validators.required]],
+      nationalId: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
       password: [
         '',
@@ -61,6 +65,10 @@ export class StaffFormDialogComponent implements OnInit {
           Validators.pattern(RegexPatternConsts.PASSWORD_PATTERN),
         ],
       ],
+      birthDate: [null, [Validators.required]],
+      phoneNumber: ['', [Validators.required]],
+      gender: [null, [Validators.required]],
+      religion: [null, [Validators.required]],
       roles: [[] as string[], [Validators.required]],
       isDisabled: [false],
     });

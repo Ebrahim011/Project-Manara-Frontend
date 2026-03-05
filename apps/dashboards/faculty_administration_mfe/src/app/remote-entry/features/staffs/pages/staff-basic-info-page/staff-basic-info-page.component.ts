@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { RegexPatternConsts } from '@project-manara-frontend/consts';
+import { Gender, Religion } from '@project-manara-frontend/enums';
 import {
   FacultyUserResponse,
   RoleResponse,
@@ -9,7 +10,7 @@ import {
 import {
   FacultyUserService,
   HttpErrorService,
-  ScopeService
+  ScopeService,
 } from '@project-manara-frontend/services';
 import { ToastrService } from 'ngx-toastr';
 import { Subject, forkJoin, takeUntil } from 'rxjs';
@@ -18,14 +19,21 @@ import { Subject, forkJoin, takeUntil } from 'rxjs';
   selector: 'app-staff-basic-info-page',
   standalone: false,
   templateUrl: './staff-basic-info-page.component.html',
-  styleUrls: ['./staff-basic-info-page.component.css']
+  styleUrls: ['./staff-basic-info-page.component.css'],
 })
 export class StaffBasicInfoPageComponent implements OnInit, OnDestroy {
-
   form!: FormGroup;
   showPassword = false;
 
   roles: RoleResponse[] = [];
+
+  religionOptions = Object.entries(Religion)
+    .filter(([, value]) => typeof value === 'number')
+    .map(([key, value]) => ({ label: key, value }));
+
+  genderOptions = Object.entries(Gender)
+    .filter(([, value]) => typeof value === 'number')
+    .map(([key, value]) => ({ label: key, value }));
 
   private staffId!: number;
   private destroy$ = new Subject<void>();
@@ -36,8 +44,8 @@ export class StaffBasicInfoPageComponent implements OnInit, OnDestroy {
     private scopeService: ScopeService,
     private facultyUserService: FacultyUserService,
     private httpErrorService: HttpErrorService,
-    private toastrService : ToastrService,
-  ) { }
+    private toastrService: ToastrService,
+  ) {}
 
   ngOnInit(): void {
     this.staffId = +this.route.parent!.snapshot.params['id'];
@@ -53,19 +61,22 @@ export class StaffBasicInfoPageComponent implements OnInit, OnDestroy {
   private initForm(): void {
     this.form = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
-      ssn: ['', [Validators.required]],
+      nationalId: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
-      password: ['',[Validators.pattern(RegexPatternConsts.PASSWORD_PATTERN)]],
+      password: ['', [Validators.pattern(RegexPatternConsts.PASSWORD_PATTERN)]],
+      birthDate: [null, [Validators.required]],
+      phoneNumber: ['', [Validators.required]],
+      gender: [null, [Validators.required]],
+      religion: [null, [Validators.required]],
       isDisabled: [false],
-      roles: [[], [Validators.required]]
+      roles: [[], [Validators.required]],
     });
   }
 
   private loadData(): void {
-
     forkJoin({
       staff: this.facultyUserService.get(this.staffId),
-      scope: this.scopeService.get('faculty')
+      scope: this.scopeService.get('faculty'),
     })
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -75,20 +86,23 @@ export class StaffBasicInfoPageComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           this.httpErrorService.handle(error);
-        }
+        },
       });
   }
 
   private populateForm(staff: FacultyUserResponse): void {
     this.form.patchValue({
       name: staff.name || '',
-      ssn: staff.ssn || '',
+      nationalId: staff.nationalId || '',
       email: staff.email || '',
       password: '',
+      birthDate: staff.birthDate || null,
+      phoneNumber: staff.phoneNumber || '',
+      gender: staff.gender ?? null,
+      religion: staff.religion ?? null,
       isDisabled: staff.isDisabled || false,
-      roles: staff.roles?.map((r: any) => r.name || r) || []
+      roles: staff.roles?.map((r: any) => r.name || r) || [],
     });
-
     this.form.markAsPristine();
     this.form.markAsUntouched();
   }
@@ -109,7 +123,8 @@ export class StaffBasicInfoPageComponent implements OnInit, OnDestroy {
 
     const formValue = this.form.value;
 
-    this.facultyUserService.update(this.staffId, formValue)
+    this.facultyUserService
+      .update(this.staffId, formValue)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (updatedStaff) => {
@@ -118,8 +133,7 @@ export class StaffBasicInfoPageComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           this.httpErrorService.handle(error);
-        }
+        },
       });
   }
-
 }

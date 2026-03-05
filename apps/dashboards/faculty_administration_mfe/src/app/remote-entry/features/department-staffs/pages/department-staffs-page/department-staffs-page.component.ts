@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { Gender, Religion } from '@project-manara-frontend/enums';
 import {
   DepartmentUserResponse,
   PaginatedList,
@@ -122,5 +123,17 @@ export class DepartmentStaffsPageComponent implements OnInit {
       response.pageNumber * this.filters.PageSize,
       response.totalCount,
     );
+  }
+
+  getGenderLabel(value: number): string {
+    return Gender[value] || '—';
+  }
+
+  getReligionLabel(value: number): string {
+    return Religion[value] || '—';
+  }
+
+  getRoleName(role: any): string {
+    return role?.name || role || '—';
   }
 }
