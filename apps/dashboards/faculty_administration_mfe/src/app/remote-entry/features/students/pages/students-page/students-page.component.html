@@ -1,3 +1,327 @@
-<p>
-  students-page works!
-</p>
+<!-- Page Header -->
+<div class="page-header mb-4">
+  <div>
+    <h1 class="page-title mb-1">Students</h1>
+    <p class="page-description mb-0">
+      View and manage all students
+    </p>
+  </div>
+</div>
+
+<!-- Stats Cards Row -->
+<div class="row g-3 mb-4">
+  <!-- Total Students -->
+  <div class="col-12 col-sm-6 col-xl-3">
+    <div class="stats-card">
+      <div class="stats-header">
+        <div class="stats-info">
+          <span class="stats-label">Total Students</span>
+          <h3 class="stats-number">{{ (students$ | async)?.totalCount || 0 }}</h3>
+          <span class="stats-meta text-success">Enrolled students</span>
+        </div>
+        <div class="stats-icon-wrapper bg-primary-soft">
+          <i class="fa-solid fa-user-graduate text-primary"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Active Students -->
+  <div class="col-12 col-sm-6 col-xl-3">
+    <div class="stats-card">
+      <div class="stats-header">
+        <div class="stats-info">
+          <span class="stats-label">Active Students</span>
+          <h3 class="stats-number">—</h3>
+          <span class="stats-meta text-success">Currently active</span>
+        </div>
+        <div class="stats-icon-wrapper bg-success-soft">
+          <i class="fa-solid fa-circle-check text-success"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Male Students -->
+  <div class="col-12 col-sm-6 col-xl-3">
+    <div class="stats-card">
+      <div class="stats-header">
+        <div class="stats-info">
+          <span class="stats-label">Male Students</span>
+          <h3 class="stats-number">—</h3>
+          <span class="stats-meta">Male enrolled</span>
+        </div>
+        <div class="stats-icon-wrapper bg-info-soft">
+          <i class="fa-solid fa-mars text-info"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Female Students -->
+  <div class="col-12 col-sm-6 col-xl-3">
+    <div class="stats-card">
+      <div class="stats-header">
+        <div class="stats-info">
+          <span class="stats-label">Female Students</span>
+          <h3 class="stats-number">—</h3>
+          <span class="stats-meta">Female enrolled</span>
+        </div>
+        <div class="stats-icon-wrapper bg-warning-soft">
+          <i class="fa-solid fa-venus text-warning"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- All Students Section -->
+<div class="students-section">
+  <div class="section-card">
+
+    <!-- Section Header -->
+    <div class="section-header">
+      <div>
+        <h4 class="section-title">All Students</h4>
+        <p class="section-subtitle">Manage and view all student accounts</p>
+      </div>
+
+      <div class="header-actions">
+        <!-- Search Bar -->
+        <div class="search-bar-wrapper">
+          <div class="search-bar">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <input
+              type="text"
+              class="search-input"
+              placeholder="Search by name, email, phone, national ID..."
+              [(ngModel)]="filters.SearchValue"
+              (change)="onSearch()"
+            />
+          </div>
+        </div>
+
+        <!-- Status Filter -->
+        <div class="filter-dropdown-container">
+          <div class="custom-select-wrapper">
+            <select
+              class="custom-select"
+              [(ngModel)]="selectedStatus"
+              (ngModelChange)="onStatusFilter()"
+            >
+              <option [value]="false">Active Only</option>
+              <option [value]="true">All</option>
+            </select>
+            <i class="fa-solid fa-chevron-down select-icon"></i>
+          </div>
+        </div>
+
+        <!-- Add Student Button -->
+        <button class="btn-add-student" [routerLink]="['add']">
+          <i class="fa-solid fa-plus"></i>
+          <span>Add Student</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Students Table -->
+    <div class="data-table-wrapper">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Student</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>National ID</th>
+            <th>Birth Date</th>
+            <th>Gender</th>
+            <th>Religion</th>
+            <th>Status</th>
+            <th class="text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngIf="students$ | async as response">
+
+            <tr *ngFor="let student of response.items">
+
+              <!-- Student Name -->
+              <td>
+                <div class="table-cell-with-icon">
+                  <div class="table-cell-icon">
+                    <i class="fa-solid fa-user-graduate"></i>
+                  </div>
+                  <a [routerLink]="[student.id]" class="table-cell-content">
+                    <span class="table-cell-title">{{ student.name }}</span>
+                  </a>
+                </div>
+              </td>
+
+              <!-- Email -->
+              <td>
+                <span class="student-email">{{ student.email || '—' }}</span>
+              </td>
+
+              <!-- Phone -->
+              <td>
+                <span class="student-phone">{{ student.phoneNumber || '—' }}</span>
+              </td>
+
+              <!-- National ID -->
+              <td>
+                <span class="student-national-id">{{ student.nationalId || '—' }}</span>
+              </td>
+
+              <!-- Birth Date -->
+              <td>
+                <span class="student-birth-date">
+                  {{ student.birthDate ? (student.birthDate | date: 'mediumDate') : '—' }}
+                </span>
+              </td>
+
+              <!-- Gender -->
+              <td>
+                <span class="student-gender">{{ getGenderLabel(student.gender) }}</span>
+              </td>
+
+              <!-- Religion -->
+              <td>
+                <span class="student-religion">{{ getReligionLabel(student.religion) }}</span>
+              </td>
+
+              <!-- Status -->
+              <td>
+                <span
+                  class="table-status-badge"
+                  [ngClass]="{
+                    'status-active': !student.isDeleted,
+                    'status-deleted': student.isDeleted
+                  }"
+                >
+                  {{ student.isDeleted ? 'Deleted' : 'Active' }}
+                </span>
+              </td>
+
+              <!-- Actions -->
+              <td>
+                <div class="table-actions">
+                  <a
+                    [routerLink]="[student.id]"
+                    class="table-action-btn btn-primary"
+                    title="Edit Student"
+                  >
+                    <i class="fa-solid fa-pen"></i>
+                  </a>
+                  <button
+                    class="table-action-btn btn-danger"
+                    title="Delete Student"
+                    (click)="onDelete(student.id)"
+                  >
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+
+            <!-- Empty State -->
+            <tr *ngIf="response.items.length === 0">
+              <td colspan="9">
+                <div class="table-empty-state">
+                  <div class="table-empty-icon">
+                    <i class="fa-solid fa-user-slash"></i>
+                  </div>
+                  <h3 class="table-empty-title">No Students Found</h3>
+                  <p class="table-empty-text">
+                    There are no students matching your criteria.
+                  </p>
+                </div>
+              </td>
+            </tr>
+
+          </ng-container>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <ng-container *ngIf="students$ | async as response">
+      <div class="table-pagination" *ngIf="response.items.length > 0">
+
+        <!-- Left: Info + Page Size -->
+        <div class="pagination-left">
+          <div class="table-pagination-info">
+            Showing {{ getStartIndex(response) }} to
+            {{ getEndIndex(response) }} of
+            {{ response.totalCount }} students
+          </div>
+
+          <div class="page-size-wrapper">
+            <span class="page-size-label">Rows per page:</span>
+            <div class="custom-select-wrapper page-size-select">
+              <select
+                class="custom-select"
+                [(ngModel)]="filters.PageSize"
+                (change)="onPageSizeChange()"
+              >
+                <option *ngFor="let size of pageSizeOptions" [ngValue]="size">
+                  {{ size }}
+                </option>
+              </select>
+              <i class="fa-solid fa-chevron-down select-icon"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Page Controls -->
+        <div class="table-pagination-controls">
+          <button
+            class="table-pagination-btn"
+            [disabled]="!response.hasPreviousPage"
+            (click)="goToPage(1, response.totalPages)"
+            title="First Page"
+          >
+            <i class="fa-solid fa-angles-left"></i>
+          </button>
+
+          <button
+            class="table-pagination-btn"
+            [disabled]="!response.hasPreviousPage"
+            (click)="goToPage(filters.PageNumber - 1, response.totalPages)"
+            title="Previous Page"
+          >
+            <i class="fa-solid fa-chevron-left"></i>
+          </button>
+
+          <button
+            *ngFor="let page of getPages(response.totalPages)"
+            class="table-pagination-btn"
+            [class.active]="page === filters.PageNumber"
+            (click)="goToPage(page, response.totalPages)"
+          >
+            {{ page }}
+          </button>
+
+          <button
+            class="table-pagination-btn"
+            [disabled]="!response.hasNextPage"
+            (click)="goToPage(filters.PageNumber + 1, response.totalPages)"
+            title="Next Page"
+          >
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+
+          <button
+            class="table-pagination-btn"
+            [disabled]="!response.hasNextPage"
+            (click)="goToPage(response.totalPages, response.totalPages)"
+            title="Last Page"
+          >
+            <i class="fa-solid fa-angles-right"></i>
+          </button>
+        </div>
+
+      </div>
+    </ng-container>
+
+  </div>
+</div>

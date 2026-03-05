@@ -1,0 +1,284 @@
+<!-- Page Header -->
+<div class="page-header mb-4">
+  <div class="d-flex align-items-center gap-3">
+    <button class="btn-back" (click)="onCancel()" title="Go Back">
+      <i class="fa-solid fa-arrow-left"></i>
+    </button>
+    <div>
+      <h1 class="page-title mb-1">Add New Student</h1>
+      <p class="page-description mb-0">
+        Fill in the details to enroll a new student
+      </p>
+    </div>
+  </div>
+</div>
+
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div class="form-layout">
+
+    <!-- ========================
+         LEFT COLUMN
+         ======================== -->
+    <div class="form-left">
+
+      <!-- Section: Personal Info -->
+      <div class="form-section">
+        <div class="section-header">
+          <div class="section-icon bg-primary-soft">
+            <i class="fas fa-user text-primary"></i>
+          </div>
+          <div>
+            <h3 class="section-title">Personal Information</h3>
+            <p class="section-subtitle">Basic identity details</p>
+          </div>
+        </div>
+
+        <div class="fields-grid">
+
+          <!-- Full Name -->
+          <div class="form-field">
+            <label class="field-label">
+              Full Name <span class="required-star">*</span>
+            </label>
+            <input type="text" class="field-input"
+              [class.invalid]="form.get('name')?.invalid && form.get('name')?.touched" formControlName="name"
+              placeholder="Enter full name" />
+            <app-display-error [control]="form.get('name')"></app-display-error>
+          </div>
+
+          <!-- National ID -->
+          <div class="form-field">
+            <label class="field-label">
+              National ID <span class="required-star">*</span>
+            </label>
+            <input type="text" class="field-input"
+              [class.invalid]="form.get('nationalId')?.invalid && form.get('nationalId')?.touched"
+              formControlName="nationalId" placeholder="Enter 14-digit national ID" maxlength="14" />
+            <app-display-error [control]="form.get('nationalId')"></app-display-error>
+          </div>
+
+          <!-- Birth Date -->
+          <div class="form-field">
+            <label class="field-label">
+              Birth Date <span class="required-star">*</span>
+            </label>
+            <input type="date" class="field-input"
+              [class.invalid]="form.get('birthDate')?.invalid && form.get('birthDate')?.touched"
+              formControlName="birthDate" />
+            <app-display-error [control]="form.get('birthDate')"></app-display-error>
+          </div>
+
+          <!-- Phone Number -->
+          <div class="form-field">
+            <label class="field-label">
+              Phone Number <span class="required-star">*</span>
+            </label>
+            <input type="tel" class="field-input"
+              [class.invalid]="form.get('phoneNumber')?.invalid && form.get('phoneNumber')?.touched"
+              formControlName="phoneNumber" placeholder="Enter phone number" />
+            <app-display-error [control]="form.get('phoneNumber')"></app-display-error>
+          </div>
+
+          <!-- Gender -->
+          <div class="form-field">
+            <label class="field-label">
+              Gender <span class="required-star">*</span>
+            </label>
+            <div class="custom-select-wrapper">
+              <select class="field-input field-select"
+                [class.invalid]="form.get('gender')?.invalid && form.get('gender')?.touched" formControlName="gender">
+                <option [ngValue]="null" disabled>Select gender...</option>
+                <option *ngFor="let g of genderOptions" [ngValue]="g.value">
+                  {{ g.label }}
+                </option>
+              </select>
+              <i class="fa-solid fa-chevron-down select-arrow"></i>
+            </div>
+            <app-display-error [control]="form.get('gender')"></app-display-error>
+          </div>
+
+          <!-- Religion -->
+          <div class="form-field">
+            <label class="field-label">
+              Religion <span class="required-star">*</span>
+            </label>
+            <div class="custom-select-wrapper">
+              <select class="field-input field-select"
+                [class.invalid]="form.get('religion')?.invalid && form.get('religion')?.touched"
+                formControlName="religion">
+                <option [ngValue]="null" disabled>Select religion...</option>
+                <option *ngFor="let r of religionOptions" [ngValue]="r.value">
+                  {{ r.label }}
+                </option>
+              </select>
+              <i class="fa-solid fa-chevron-down select-arrow"></i>
+            </div>
+            <app-display-error [control]="form.get('religion')"></app-display-error>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Section: Academic Info -->
+      <div class="form-section">
+        <div class="section-header">
+          <div class="section-icon bg-success-soft">
+            <i class="fas fa-graduation-cap text-success"></i>
+          </div>
+          <div>
+            <h3 class="section-title">Academic Information</h3>
+            <p class="section-subtitle">Department and program enrollment</p>
+          </div>
+        </div>
+
+        <div class="fields-grid">
+
+          <!-- Department -->
+          <div class="form-field">
+            <label class="field-label">
+              Department <span class="required-star">*</span>
+            </label>
+            <div class="custom-select-wrapper">
+              <select class="field-input field-select"
+                [class.invalid]="form.get('departmentId')?.invalid && form.get('departmentId')?.touched"
+                formControlName="departmentId" (change)="onDepartmentChange()">
+                <option [ngValue]="null" disabled>Select department...</option>
+                <option *ngFor="let dept of departments" [ngValue]="dept.id">
+                  {{ dept.name }}
+                </option>
+              </select>
+              <i class="fa-solid fa-chevron-down select-arrow"></i>
+            </div>
+            <app-display-error [control]="form.get('departmentId')"></app-display-error>
+          </div>
+
+          <!-- Program -->
+          <div class="form-field">
+            <label class="field-label">
+              Program <span class="required-star">*</span>
+            </label>
+            <div class="custom-select-wrapper" [class.disabled-wrapper]="!form.get('departmentId')?.value">
+              <select class="field-input field-select"
+                [class.invalid]="form.get('programId')?.invalid && form.get('programId')?.touched"
+                formControlName="programId">
+                <option [ngValue]="null" disabled>Select program...</option>
+                <option *ngFor="let prog of programs" [ngValue]="prog.id">
+                  {{ prog.name }}
+                </option>
+              </select>
+              <i class="fa-solid fa-chevron-down select-arrow"></i>
+            </div>
+            <app-display-error [control]="form.get('programId')"></app-display-error>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ========================
+         RIGHT COLUMN
+         ======================== -->
+    <div class="form-right">
+
+      <!-- Section: Account Credentials -->
+      <div class="form-section">
+        <div class="section-header">
+          <div class="section-icon bg-warning-soft">
+            <i class="fas fa-shield-alt text-warning"></i>
+          </div>
+          <div>
+            <h3 class="section-title">Account Credentials</h3>
+            <p class="section-subtitle">Login email and password</p>
+          </div>
+        </div>
+
+        <div class="fields-grid fields-grid-1col">
+
+          <!-- Email -->
+          <div class="form-field">
+            <label class="field-label">
+              Email Address <span class="required-star">*</span>
+            </label>
+            <div class="input-icon-wrapper">
+              <i class="fas fa-envelope input-icon"></i>
+              <input type="email" class="field-input field-input-icon"
+                [class.invalid]="form.get('email')?.invalid && form.get('email')?.touched" formControlName="email"
+                placeholder="example@university.edu" />
+            </div>
+            <app-display-error [control]="form.get('email')"></app-display-error>
+          </div>
+
+          <!-- Password -->
+          <div class="form-field">
+            <label class="field-label">
+              Password <span class="required-star">*</span>
+            </label>
+            <div class="input-icon-wrapper">
+              <i class="fas fa-lock input-icon"></i>
+              <input [type]="showPassword ? 'text' : 'password'"
+                class="field-input field-input-icon field-input-icon-right"
+                [class.invalid]="form.get('password')?.invalid && form.get('password')?.touched"
+                formControlName="password" placeholder="Enter password" />
+              <button type="button" class="toggle-password" (click)="showPassword = !showPassword" tabindex="-1">
+                <i class="fa-solid" [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+              </button>
+            </div>
+            <app-display-error [control]="form.get('password')"></app-display-error>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Section: Account Status -->
+      <div class="form-section">
+        <div class="section-header">
+          <div class="section-icon bg-info-soft">
+            <i class="fas fa-toggle-on text-info"></i>
+          </div>
+          <div>
+            <h3 class="section-title">Account Status</h3>
+            <p class="section-subtitle">Control account access</p>
+          </div>
+        </div>
+
+        <div class="status-box" [class.active]="!form.get('isDisabled')?.value"
+          [class.inactive]="form.get('isDisabled')?.value">
+          <div class="status-info">
+            <span class="status-indicator" [class.off]="form.get('isDisabled')?.value"></span>
+            <div>
+              <div class="status-label">
+                {{ form.get('isDisabled')?.value ? 'Disabled' : 'Active' }}
+              </div>
+              <div class="status-desc">
+                {{
+                form.get('isDisabled')?.value
+                ? 'This account is currently suspended'
+                : 'This account is fully operational'
+                }}
+              </div>
+            </div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" formControlName="isDisabled" />
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="form-section">
+        <div class="form-actions">
+          <button type="button" class="btn btn-cancel" (click)="onCancel()">
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-submit" [disabled]="form.invalid">
+            <i class="fa-solid fa-user-plus"></i>
+            <span>Enroll Student</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</form>

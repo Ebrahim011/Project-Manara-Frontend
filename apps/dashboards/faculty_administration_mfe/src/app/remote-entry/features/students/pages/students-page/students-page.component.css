@@ -1,0 +1,353 @@
+/* =====================
+   Students Page Styles
+   ===================== */
+
+/* =====================
+   Page Header
+   ===================== */
+.page-header {
+  margin-bottom: var(--space-2xl);
+}
+
+.page-title {
+  font-size: var(--fs-4xl);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin-bottom: var(--space-xs);
+}
+
+.page-description {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+}
+
+/* =====================
+   Stats Cards
+   ===================== */
+.stats-card {
+  background: white;
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  transition: all 0.3s ease;
+  height: 100%;
+}
+
+.stats-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.stats-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.stats-info {
+  flex: 1;
+}
+
+.stats-label {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: block;
+  margin-bottom: var(--space-xs);
+}
+
+.stats-number {
+  font-size: var(--fs-4xl);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin: 0 0 var(--space-xs) 0;
+  line-height: 1;
+}
+
+.stats-meta {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+}
+
+.stats-icon-wrapper {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--fs-2xl);
+}
+
+.bg-primary-soft { background: rgba(37, 99, 235, 0.1); }
+.bg-success-soft  { background: rgba(16, 185, 129, 0.1); }
+.bg-warning-soft  { background: rgba(245, 158, 11, 0.1); }
+.bg-info-soft     { background: rgba(59, 130, 246, 0.1); }
+
+/* =====================
+   Section Card
+   ===================== */
+.section-card {
+  background: white;
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-xl);
+  padding-bottom: var(--space-lg);
+  border-bottom: 1px solid var(--card-border);
+  gap: var(--space-lg);
+}
+
+.section-title {
+  font-size: var(--fs-2xl);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+  margin: 0 0 var(--space-xs) 0;
+}
+
+.section-subtitle {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* =====================
+   Header Actions
+   ===================== */
+.header-actions {
+  display: flex;
+  gap: var(--space-md);
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* =====================
+   Search Bar
+   ===================== */
+.search-bar-wrapper {
+  min-width: 220px;
+}
+
+.search-bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  position: absolute;
+  left: var(--space-lg);
+  color: var(--text-muted);
+  font-size: var(--fs-md);
+  pointer-events: none;
+}
+
+.search-input {
+  width: 100%;
+  padding: var(--space-md) var(--space-lg) var(--space-md) 2.5rem;
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+  font-size: var(--fs-md);
+  color: var(--text-primary);
+  transition: all 0.2s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--main-color);
+  background: white;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.search-input::placeholder {
+  color: var(--text-muted);
+}
+
+/* =====================
+   Add Student Button
+   ===================== */
+.btn-add-student {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-xl);
+  background: var(--main-color);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-add-student:hover {
+  background: var(--main-light);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-add-student:active {
+  transform: translateY(0);
+}
+
+.btn-add-student i {
+  font-size: var(--fs-sm);
+}
+
+/* =====================
+   Student Fields
+   ===================== */
+.student-email,
+.student-phone,
+.student-national-id,
+.student-birth-date,
+.student-gender,
+.student-religion {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+}
+
+.student-email     { word-break: break-all; }
+.student-phone     { white-space: nowrap; }
+
+/* =====================
+   Status Badges
+   ===================== */
+.table-status-badge.status-deleted {
+  background: #fecaca;
+  color: #7f1d1d;
+}
+
+/* =====================
+   Action Buttons
+   ===================== */
+.table-action-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* =====================
+   Responsive Column Hiding
+   ===================== */
+
+/* Hide National ID & Birth Date on large tablets */
+@media (max-width: 1199.98px) {
+  .students-section .data-table th:nth-child(4),
+  .students-section .data-table td:nth-child(4),
+  .students-section .data-table th:nth-child(5),
+  .students-section .data-table td:nth-child(5) {
+    display: none;
+  }
+}
+
+/* Hide Phone on tablets */
+@media (max-width: 991.98px) {
+  .students-section .data-table th:nth-child(3),
+  .students-section .data-table td:nth-child(3) {
+    display: none;
+  }
+}
+
+/* Hide Email on mobile */
+@media (max-width: 767.98px) {
+  .students-section .data-table th:nth-child(2),
+  .students-section .data-table td:nth-child(2) {
+    display: none;
+  }
+}
+
+/* =====================
+   Responsive Layout
+   ===================== */
+@media (max-width: 1199.98px) {
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .header-actions {
+    width: 100%;
+  }
+
+  .search-bar-wrapper {
+    flex: 1;
+  }
+
+  .btn-add-student {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .stats-number {
+    font-size: var(--fs-3xl);
+  }
+}
+
+@media (max-width: 767.98px) {
+  .header-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-bar-wrapper {
+    min-width: 100%;
+  }
+
+  .filter-dropdown-container {
+    width: 100%;
+  }
+
+  .custom-select-wrapper {
+    min-width: 100%;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .stats-card,
+  .section-card {
+    padding: var(--space-lg);
+  }
+
+  .stats-number {
+    font-size: var(--fs-2xl);
+  }
+
+  .stats-icon-wrapper {
+    width: 2rem;
+    height: 2rem;
+    font-size: var(--fs-xl);
+  }
+
+  .page-title {
+    font-size: var(--fs-3xl);
+  }
+
+  .btn-add-student {
+    padding: var(--space-sm) var(--space-lg);
+    font-size: var(--fs-sm);
+  }
+
+  .table-actions {
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .table-action-btn {
+    width: 1.6rem;
+    height: 1.6rem;
+    font-size: var(--fs-xs);
+  }
+}

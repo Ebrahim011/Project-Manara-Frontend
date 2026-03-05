@@ -43,3 +43,7 @@ export * from './lib/common/request-filters';
 
 export * from './lib/permissions/requests/permissions-request';
 export * from './lib/permissions/responses/user-permissions-response';
+
+
+export * from './lib/program-users/requests/program-user-request';
+export * from './lib/program-users/responses/program-user-response';
