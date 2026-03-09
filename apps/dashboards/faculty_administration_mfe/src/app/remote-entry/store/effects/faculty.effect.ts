@@ -16,7 +16,6 @@ export class FacultyEffect {
         ofType(getFacultyAction),
         switchMap(() =>
           facultyService.my().pipe(
-            retry(3),
             map((response) =>
             {
               return getFacultySuccessAction({ faculty: response })

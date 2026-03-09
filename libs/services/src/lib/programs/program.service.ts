@@ -4,6 +4,7 @@ import {
   ProgramDetailResponse,
   ProgramRequest,
   ProgramResponse,
+  SubjectResponse,
 } from '@project-manara-frontend/models';
 import { Observable } from 'rxjs';
 import { environment } from 'environments/environment';
@@ -12,7 +13,7 @@ import { environment } from 'environments/environment';
   providedIn: 'root',
 })
 export class ProgramService {
-  constructor(private apiClient: ApiClientService) {}
+  constructor(private apiClient: ApiClientService) { }
 
   getAll(
     departmentId: number,
@@ -44,6 +45,26 @@ export class ProgramService {
   toggleStatus(id: number) {
     return this.apiClient.delete(
       `${environment.apiUrl}/api/programs/${id}/toggle-status`,
+    );
+  }
+
+
+  getSubjects(programId: number) : Observable<SubjectResponse[]> {
+    return this.apiClient.get(
+      `${environment.apiUrl}/api/programs/${programId}/subjects`,
+    );
+  }
+
+  addSubject(programId: number, subjectId: number) {
+    return this.apiClient.post(
+      `${environment.apiUrl}/api/programs/${programId}/subjects/${subjectId}`,
+      {},
+    );
+  }
+
+  removeSubject(programId: number, subjectId: number) {
+    return this.apiClient.delete(
+      `${environment.apiUrl}/api/programs/${programId}/subjects/${subjectId}`,
     );
   }
 }

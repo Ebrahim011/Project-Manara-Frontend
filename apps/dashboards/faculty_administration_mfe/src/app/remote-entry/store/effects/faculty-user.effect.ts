@@ -17,7 +17,6 @@ export class FacultyUserEffect {
         ofType(getFacultyUserAction),
         switchMap(() =>
           facultyUserService.my().pipe(
-            retry(3),
             map((response) => {
               return getFacultyUserSuccessAction({ facultyUser: response })
             }

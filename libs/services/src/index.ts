@@ -21,4 +21,6 @@ export * from './lib/permissions/permission.service';
 export * from './lib/permissions/base-permission.service';
 export * from './lib/university-users/university-user.service';
 export * from './lib/program-users/program-user.service';
+export * from './lib/subjects/subject.service';
+
 

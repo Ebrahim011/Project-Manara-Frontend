@@ -89,7 +89,6 @@
   width: 100%;
 }
 
-/* Left Panel columns */
 .subjects-table .col-name {
   width: 55%;
   text-align: left;
@@ -110,14 +109,12 @@
   text-align: center;
 }
 
-/* Header alignment */
 .subjects-table thead th.col-code,
 .subjects-table thead th.col-credits,
 .subjects-table thead th.col-action {
   text-align: center;
 }
 
-/* Body cell alignment */
 .subjects-table tbody td.col-code,
 .subjects-table tbody td.col-credits,
 .subjects-table tbody td.col-action {
@@ -134,10 +131,6 @@
   font-weight: var(--fw-normal);
 }
 
-.subject-name-text.orange {
-  color: var(--orange-color);
-}
-
 /* =====================
    Subject Code & Credits
 ===================== */
@@ -149,6 +142,14 @@
 .subject-credits {
   font-size: var(--fs-md);
   color: var(--text-secondary);
+}
+
+/* =====================
+   Row Disabled State
+===================== */
+.data-table tbody tr.row-disabled {
+  opacity: 0.45;
+  pointer-events: none;
 }
 
 /* =====================
@@ -176,6 +177,48 @@
 }
 
 .add-btn:active {
+  transform: translateY(0);
+}
+
+/* =====================
+   Add Button - Added State
+===================== */
+.add-btn--added {
+  background: var(--success) !important;
+  cursor: not-allowed !important;
+}
+
+.add-btn--added:hover {
+  transform: none !important;
+  background: var(--success) !important;
+}
+
+/* =====================
+   Remove Button
+===================== */
+.remove-btn {
+  width: 2rem;
+  height: 2rem;
+  background: white;
+  border: 1px solid var(--error);
+  border-radius: var(--radius-md);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--error);
+  font-size: var(--fs-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.remove-btn:hover {
+  background: var(--error);
+  color: white;
+  transform: translateY(-1px);
+}
+
+.remove-btn:active {
   transform: translateY(0);
 }
 
