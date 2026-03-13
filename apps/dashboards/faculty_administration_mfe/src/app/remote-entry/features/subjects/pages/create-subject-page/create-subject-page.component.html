@@ -1,3 +1,354 @@
-<p>
-  create-subject-page works!
-</p>
+<!-- Page Header -->
+<div class="page-header mb-4">
+  <div>
+    <h1 class="page-title mb-1">Add new Subject</h1>
+    <p class="page-description mb-0">Add a new subject to the system</p>
+  </div>
+</div>
+
+<form class="subject-form" [formGroup]="form" (ngSubmit)="onSubmit()">
+  <!-- ===== Subject Information Card ===== -->
+  <div class="section-card mb-4">
+    <div class="section-header">
+      <div>
+        <h4 class="section-title">Subject Information</h4>
+        <p class="section-subtitle">Enter the basic subject details</p>
+      </div>
+    </div>
+
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label">Subject Name</label>
+        <input
+          type="text"
+          class="form-input"
+          [class.invalid]="
+            form.get('name')?.invalid && form.get('name')?.touched
+          "
+          formControlName="name"
+          placeholder="e.g. Mathematics"
+        />
+        <app-display-error [control]="form.get('name')"></app-display-error>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Code</label>
+        <input
+          type="text"
+          class="form-input"
+          placeholder="e.g. MATH101"
+          formControlName="code"
+          [class.invalid]="
+            form.get('code')?.invalid && form.get('code')?.touched
+          "
+        />
+        <app-display-error [control]="form.get('code')"></app-display-error>
+      </div>
+
+      <div class="col-md-3">
+        <label class="form-label">Credit Hours</label>
+        <input
+          type="number"
+          formControlName="creditHours"
+          class="form-input"
+          placeholder="e.g. 3"
+          min="1"
+          max="6"
+          [class.invalid]="
+            form.get('creditHours')?.invalid && form.get('creditHours')?.touched
+          "
+        />
+        <app-display-error
+          [control]="form.get('creditHours')"
+        ></app-display-error>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Description</label>
+        <textarea
+          formControlName="description"
+          class="form-input form-textarea"
+          placeholder="e.g. Introduction to mathematics..."
+          [class.invalid]="
+            form.get('description')?.invalid && form.get('description')?.touched
+          "
+        ></textarea>
+        <app-display-error
+          [control]="form.get('description')"
+        ></app-display-error>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Prerequisites Section ===== -->
+  <div class="row g-4">
+    <!-- Left Panel: Available Subjects -->
+    <div class="col-lg-7">
+      <div class="section-card h-100">
+        <div class="section-header">
+          <div>
+            <h4 class="section-title">Available Subjects</h4>
+            <p class="section-subtitle">Select prerequisites from the list</p>
+          </div>
+        </div>
+
+        <!-- Search -->
+        <div class="search-bar mb-3">
+          <i class="fa-solid fa-magnifying-glass search-icon"></i>
+          <input
+            type="text"
+            name="search"
+            class="search-input"
+            (keydown.enter)="$event.preventDefault(); onSearch()"
+            [ngModelOptions]="{ standalone: true }"
+            [(ngModel)]="filters.SearchValue"
+            (change)="onSearch()"
+            placeholder="Search by name or code..."
+          />
+        </div>
+
+        <ng-container *ngIf="subjects$ | async as response">
+          <!-- Table -->
+          <div class="data-table-wrapper">
+            <table class="data-table subjects-table">
+              <thead>
+                <tr>
+                  <th class="col-name">Subject Name</th>
+                  <th>Code</th>
+                  <th>Credits</th>
+                  <th class="text-center">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  *ngFor="let subject of response.items"
+                  [class.row-disabled]="isSelected(subject.id)"
+                >
+                  <!-- Subject Name -->
+                  <td>
+                    <div class="table-cell-with-icon">
+                      <div class="table-cell-icon">
+                        <i class="fa-solid fa-book"></i>
+                      </div>
+                      <a [routerLink]="[subject.id]" class="table-cell-content">
+                        <span class="table-cell-title">{{ subject.name }}</span>
+                      </a>
+                    </div>
+                  </td>
+
+                  <!-- Code -->
+                  <td>
+                    <span class="subject-code">{{ subject.code || '—' }}</span>
+                  </td>
+
+                  <!-- Credit Hours -->
+                  <td>
+                    <span class="subject-credit-hours">{{
+                      subject.creditHours || '—'
+                    }}</span>
+                  </td>
+
+                  <!-- Actions -->
+                  <td class="col-action">
+                    <button
+                      type="button"
+                      class="add-btn"
+                      [class.add-btn--added]="isSelected(subject.id)"
+                      [disabled]="isSelected(subject.id)"
+                      [title]="
+                        isSelected(subject.id) ? 'Already added' : 'Add subject'
+                      "
+                      (click)="addSubject(subject)"
+                    >
+                      <i
+                        class="fas"
+                        [class.fa-plus]="!isSelected(subject.id)"
+                        [class.fa-check]="isSelected(subject.id)"
+                      ></i>
+                    </button>
+                  </td>
+                </tr>
+
+                <!-- Empty State -->
+                <tr *ngIf="response.items.length === 0">
+                  <td colspan="6">
+                    <div class="table-empty-state">
+                      <div class="table-empty-icon">
+                        <i class="fa-solid fa-book-open"></i>
+                      </div>
+                      <h3 class="table-empty-title">No Subjects Found</h3>
+                      <p class="table-empty-text">
+                        There are no subjects matching your criteria.
+                      </p>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="table-pagination">
+            <div class="pagination-left">
+              <div class="table-pagination-info">
+                Showing {{ getStartIndex(response) }} to
+                {{ getEndIndex(response) }} of
+                {{ response.totalCount }} subjects
+              </div>
+              <div class="page-size-wrapper">
+                <span class="page-size-label">Rows per page:</span>
+                <div class="custom-select-wrapper page-size-select">
+                  <select
+                    class="custom-select"
+                    name="pageSize"
+                    [(ngModel)]="filters.PageSize"
+                    [ngModelOptions]="{ standalone: true }"
+                    (change)="onPageSizeChange()"
+                  >
+                    <option
+                      *ngFor="let size of pageSizeOptions"
+                      [ngValue]="size"
+                    >
+                      {{ size }}
+                    </option>
+                  </select>
+                  <i class="fa-solid fa-chevron-down select-icon"></i>
+                </div>
+              </div>
+            </div>
+            <!-- Right: Page Controls -->
+            <div class="table-pagination-controls">
+              <button
+                class="table-pagination-btn"
+                [disabled]="!response.hasPreviousPage"
+                (click)="goToPage(1, response.totalPages)"
+                title="First Page"
+                type="button"
+              >
+                <i class="fa-solid fa-angles-left"></i>
+              </button>
+
+              <button
+                class="table-pagination-btn"
+                [disabled]="!response.hasPreviousPage"
+                (click)="goToPage(filters.PageNumber - 1, response.totalPages)"
+                title="Previous Page"
+                type="button"
+              >
+                <i class="fa-solid fa-chevron-left"></i>
+              </button>
+
+              <button
+                *ngFor="let page of getPages(response.totalPages)"
+                class="table-pagination-btn"
+                [class.active]="page === filters.PageNumber"
+                (click)="goToPage(page, response.totalPages)"
+                type="button"
+              >
+                {{ page }}
+              </button>
+
+              <button
+                class="table-pagination-btn"
+                type="button"
+                [disabled]="!response.hasNextPage"
+                (click)="goToPage(filters.PageNumber + 1, response.totalPages)"
+                title="Next Page"
+              >
+                <i class="fa-solid fa-chevron-right"></i>
+              </button>
+
+              <button
+                class="table-pagination-btn"
+                type="button"
+                [disabled]="!response.hasNextPage"
+                (click)="goToPage(response.totalPages, response.totalPages)"
+                title="Last Page"
+              >
+                <i class="fa-solid fa-angles-right"></i>
+              </button>
+            </div>
+          </div>
+        </ng-container>
+
+        <!-- Pagination -->
+        <!-- <ng-container *ngIf="subjects$ | async as response">
+
+        </ng-container> -->
+      </div>
+    </div>
+
+    <!-- Right Panel: Selected Prerequisites -->
+    <div class="col-lg-5">
+      <div class="section-card h-100">
+        <div class="section-header">
+          <div>
+            <h4 class="section-title">Selected Prerequisites</h4>
+            <p class="section-subtitle">Subjects required before this one</p>
+          </div>
+          <span class="selected-count"
+            >{{ selectedSubjects.length }} subject(s)</span
+          >
+        </div>
+
+        <div class="data-table-wrapper">
+          <table class="data-table subjects-table">
+            <thead>
+              <tr>
+                <th class="col-name">Subject Name</th>
+                <th>Code</th>
+                <th>Credits</th>
+                <th class="text-center">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- لو فيه مواد مختارة -->
+              <tr *ngFor="let subject of selectedSubjects">
+                <td class="col-name">
+                  <span class="subject-name-text">{{ subject.name }}</span>
+                </td>
+                <td class="col-code">
+                  <span class="subject-code">{{ subject.code }}</span>
+                </td>
+                <td class="col-credits">
+                  <span class="subject-credits">{{ subject.creditHours }}</span>
+                </td>
+                <td class="col-action">
+                  <button
+                    (click)="deleteSubject(subject.id)"
+                    type="button"
+                    class="remove-btn"
+                    title="Remove subject"
+                  >
+                    <i class="fas fa-times"></i>
+                  </button>
+                </td>
+              </tr>
+
+              <!-- لو مفيش مواد مختارة اظهر ده وشيل اللى فوق -->
+
+              <tr class="empty-row" *ngIf="selectedSubjects.length == 0">
+                <td colspan="4">
+                  <div class="empty-state">
+                    <div class="empty-icon-wrapper">
+                      <i class="fas fa-plus empty-plus-icon"></i>
+                    </div>
+                    <p class="empty-title">No prerequisites selected</p>
+                    <p class="empty-subtitle">
+                      Add subjects from the left panel
+                    </p>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- end prerequisites row -->
+
+  <!-- ===== Form Actions ===== -->
+  <div class="form-actions">
+    <button type="submit" class="btn-save" [disabled]="form.invalid">
+      <i class="fas fa-save"></i>
+      Save Subject
+    </button>
+  </div>
+</form>

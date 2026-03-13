@@ -103,16 +103,7 @@ export class SubjectsPageComponent implements OnInit {
     );
   }
 
-  // getGenderLabel(value: number): string {
-  //   return Gender[value] || '—';
-  // }
-
-  // getReligionLabel(value: number): string {
-  //   return Religion[value] || '—';
-  // }
-
   onDelete(id: number): void {
-    alert(id);
     this.subjectService.toggleStatus(id).subscribe({
       next: () => {
         this.loadSubjects();

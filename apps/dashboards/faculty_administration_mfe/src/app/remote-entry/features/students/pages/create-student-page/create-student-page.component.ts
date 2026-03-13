@@ -70,7 +70,10 @@ export class CreateStudentPageComponent implements OnInit {
   private loadFacultyId(): void {
     this.store
       .select(selectFacultyId)
-      .pipe(filter((id) => !!id), take(1))
+      .pipe(
+        filter((id) => !!id),
+        take(1),
+      )
       .subscribe((facultyId) => {
         this.facultyId = facultyId!;
       });
