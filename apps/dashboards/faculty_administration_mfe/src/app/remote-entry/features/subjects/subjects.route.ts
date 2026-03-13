@@ -3,6 +3,7 @@ import { SubjectsPageComponent } from './pages/subjects-page/subjects-page.compo
 import { CreateSubjectPageComponent } from './pages/create-subject-page/create-subject-page.component';
 import { SubjectDetailPageComponent } from './pages/subject-detail-page/subject-detail-page.component';
 import { EditSubjectPageComponent } from './pages/edit-subject-page/edit-subject-page.component';
+import { SubjectOverviewPageComponent } from './pages/subject-overview-page/subject-overview-page.component';
 
 export const routes: Routes = [
   {
@@ -17,17 +18,17 @@ export const routes: Routes = [
     path: ':id',
     component: SubjectDetailPageComponent,
     children: [
-      // {
-      //   path: '',
-      //   redirectTo: 'overview',
-      //   pathMatch: 'full',
-      // },
-      // {
-      //   path: 'overview',
-      //   component: StudentOverviewComponent,
-      // },
       {
-        path: 'basic-information',
+        path: '',
+        redirectTo: 'overview',
+        pathMatch: 'full',
+      },
+      {
+        path: 'overview',
+        component: SubjectOverviewPageComponent,
+      },
+      {
+        path: 'edit',
         component: EditSubjectPageComponent,
       },
     ],

@@ -3,16 +3,15 @@ import { UserService } from '@project-manara-frontend/services';
 
 @Directive({
   selector: '[hasPermission]',
-  standalone: true
+  standalone: true,
 })
 export class HasPermissionDirective implements OnInit {
-
   @Input('hasPermission') permission!: string;
 
   constructor(
     private el: ElementRef,
     private renderer: Renderer2,
-    private userService: UserService
+    private userService: UserService,
   ) {}
 
   ngOnInit(): void {

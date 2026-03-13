@@ -5,4 +5,9 @@ export interface SubjectDetailResponse {
   description: string;
   creditHours: number;
   isDeleted: boolean;
+  prerequisites: Prerequisite[];
+}
+interface Prerequisite {
+  id: number;
+  name: string;
 }

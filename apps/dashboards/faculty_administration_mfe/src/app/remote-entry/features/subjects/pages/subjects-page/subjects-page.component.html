@@ -116,7 +116,11 @@
         </div>
 
         <!-- Add Subject Button -->
-        <button class="btn-add-subject" [routerLink]="['add']">
+        <button
+          class="btn-add-subject"
+          [routerLink]="['add']"
+          hasPermission="subjects:create"
+        >
           <i class="fa-solid fa-plus"></i>
           <span>Add Subject</span>
         </button>
@@ -196,6 +200,7 @@
                   <button
                     class="table-action-btn btn-danger"
                     title="Delete Subject"
+                    hasPermission="subjects:toggleStatus"
                     (click)="onDelete(subject.id)"
                   >
                     <i class="fa-solid fa-trash"></i>

@@ -8,8 +8,7 @@ export const hasPermissionGuard: CanActivateFn = (route, state) => {
 
   const data = route.data['required-permission'] as string;
 
-  if (userService.currentUser?.permissions.includes(data))
-    return true;
+  if (userService.currentUser?.permissions.includes(data)) return true;
 
   router.navigate(['access-denied'], { queryParams: { returnUrl: route.url } });
   return false;

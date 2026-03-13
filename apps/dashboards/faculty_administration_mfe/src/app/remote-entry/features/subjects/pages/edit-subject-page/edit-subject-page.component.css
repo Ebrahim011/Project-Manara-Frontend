@@ -1,0 +1,416 @@
+/* =====================
+   Page Description
+===================== */
+.page-description {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+}
+
+/* =====================
+   Section Card & Header
+===================== */
+.section-card {
+  background: white;
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-xl);
+  padding-bottom: var(--space-lg);
+  border-bottom: 1px solid var(--card-border);
+  gap: var(--space-lg);
+}
+
+.section-title {
+  font-size: var(--fs-2xl);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+  margin: 0 0 var(--space-xs) 0;
+}
+
+/* ===== هنا الـ fix الأساسي ===== */
+.section-subtitle,
+.section-header p,
+.section-header .section-subtitle {
+  font-size: var(--fs-sm) !important;
+  color: var(--text-secondary) !important;
+  margin: 0 !important;
+  text-decoration: none !important;
+}
+
+/* =====================
+   Selected Count
+===================== */
+.selected-count {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  font-weight: var(--fw-medium);
+  white-space: nowrap;
+}
+
+/* =====================
+   Form Labels & Inputs
+===================== */
+.form-label {
+  display: block;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  color: var(--text-secondary);
+  margin-bottom: var(--space-xs);
+}
+
+.form-input {
+  width: 100%;
+  padding: var(--space-md) var(--space-lg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+  font-size: var(--fs-md);
+  font-family: inherit;
+  color: var(--text-primary);
+  background: white;
+  outline: none;
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.form-input::placeholder {
+  color: var(--text-muted);
+}
+
+.form-input:focus {
+  border-color: var(--main-color);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* =====================
+   Subjects Table
+===================== */
+.subjects-table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+.subjects-table .col-name {
+  width: 55%;
+  text-align: left;
+}
+
+.subjects-table .col-code {
+  width: 17%;
+  text-align: center;
+}
+
+.subjects-table .col-credits {
+  width: 13%;
+  text-align: center;
+}
+
+.subjects-table .col-action {
+  width: 15%;
+  text-align: center;
+}
+
+.subjects-table thead th.col-code,
+.subjects-table thead th.col-credits,
+.subjects-table thead th.col-action {
+  text-align: center;
+}
+
+.subjects-table tbody td.col-code,
+.subjects-table tbody td.col-credits,
+.subjects-table tbody td.col-action {
+  text-align: center;
+  vertical-align: middle;
+}
+
+/* =====================
+   Subject Text Styles
+===================== */
+.subject-name-text {
+  font-size: var(--fs-md);
+  color: var(--text-primary);
+  font-weight: var(--fw-normal);
+}
+
+.subject-code,
+.subject-credits {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+}
+
+/* =====================
+   Row Disabled
+===================== */
+.data-table tbody tr.row-disabled {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+/* =====================
+   Add Button
+===================== */
+.add-btn {
+  width: 2rem;
+  height: 2rem;
+  background: var(--main-color);
+  border: none;
+  border-radius: var(--radius-md);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: var(--fs-sm);
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.add-btn:hover {
+  background: var(--main-light);
+  transform: translateY(-1px);
+}
+
+.add-btn:active {
+  transform: translateY(0);
+}
+
+.add-btn--added {
+  background: var(--success) !important;
+  cursor: not-allowed !important;
+}
+
+.add-btn--added:hover {
+  transform: none !important;
+  background: var(--success) !important;
+}
+
+/* =====================
+   Remove Button
+===================== */
+.remove-btn {
+  width: 2rem;
+  height: 2rem;
+  background: white;
+  border: 1px solid var(--error);
+  border-radius: var(--radius-md);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--error);
+  font-size: var(--fs-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.remove-btn:hover {
+  background: var(--error);
+  color: white;
+  transform: translateY(-1px);
+}
+
+.remove-btn:active {
+  transform: translateY(0);
+}
+
+/* =====================
+   Empty State
+===================== */
+.empty-row td {
+  border-bottom: none !important;
+  padding: 0 !important;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-2xl) var(--space-lg);
+  gap: var(--space-xs);
+  min-height: 200px;
+}
+
+.empty-icon-wrapper {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  border: 2px solid var(--card-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--space-md);
+}
+
+.empty-plus-icon {
+  font-size: var(--fs-lg);
+  color: var(--text-light);
+}
+
+.empty-title {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-medium);
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.empty-subtitle {
+  font-size: var(--fs-md);
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* =====================
+   Form Actions
+===================== */
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--space-md);
+  margin-top: var(--space-2xl);
+  padding-top: var(--space-xl);
+  border-top: 1px solid var(--card-border);
+}
+
+.btn-cancel {
+  padding: var(--space-md) var(--space-2xl);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: var(--fs-md);
+  font-weight: var(--fw-medium);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.btn-cancel:hover {
+  background: var(--card-border);
+  color: var(--text-primary);
+}
+
+.btn-save {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-2xl);
+  background: var(--main-color);
+  border: none;
+  border-radius: var(--radius-md);
+  color: #ffffff;
+  font-size: var(--fs-md);
+  font-weight: var(--fw-medium);
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+  font-family: inherit;
+}
+
+.btn-save:hover {
+  background: var(--main-light);
+  transform: translateY(-1px);
+}
+
+.btn-save:active {
+  transform: translateY(0);
+}
+
+/* =====================
+   Responsive
+===================== */
+@media (max-width: 991.98px) {
+  .subjects-table .col-name {
+    width: 50%;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .subjects-table {
+    table-layout: auto;
+  }
+
+  .form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .btn-cancel,
+  .btn-save {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Fix Search Bar */
+.search-bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.search-bar .search-icon {
+  position: absolute;
+  left: var(--space-lg);
+  color: var(--text-muted);
+  font-size: var(--fs-md);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.search-bar .search-input {
+  width: 100%;
+  padding: var(--space-md) var(--space-lg) var(--space-md) 2.5rem;
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+  font-size: var(--fs-md);
+  color: var(--text-primary);
+  background: white;
+  outline: none;
+  font-family: inherit;
+  transition: all 0.2s ease;
+}
+
+.search-bar .search-input::placeholder {
+  color: var(--text-muted);
+}
+
+.search-bar .search-input:focus {
+  border-color: var(--main-color);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* Fix Page Description Color */
+.page-description {
+  font-size: var(--fs-md) !important;
+  color: var(--text-secondary) !important;
+  text-decoration: none !important;
+}
+
+.page-title {
+  font-size: var(--fs-4xl);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin-bottom: var(--space-xs);
+}
+
+/* =====================
+   Textarea
+===================== */
+.form-textarea {
+  resize: vertical;
+  min-height: 80px;
+  line-height: 1.5;
+}
+
+.btn-save:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+  transform: none !important;
+}

@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import {
   PaginatedList,
   RequestFilters,
+  SubjectDetailResponse,
   SubjectRequest,
   SubjectResponse,
 } from '@project-manara-frontend/models';
@@ -44,7 +45,7 @@ export class SubjectService {
     );
   }
 
-  get(id: number): Observable<SubjectResponse> {
+  get(id: number): Observable<SubjectDetailResponse> {
     return this.apiClient.get(`${environment.apiUrl}/api/subjects/${id}`);
   }
 
