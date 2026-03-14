@@ -1,0 +1,202 @@
+name: CI/CD Pipeline
+
+# ─────────────────────────────────────────────
+#  Triggers
+#  • Every push to main  → full CI + Deploy
+#  • Every pull request  → CI only (no deploy)
+# ─────────────────────────────────────────────
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  NODE_VERSION: '20'
+  # ────────────────────────────────────────────────────────────
+  #  Verify NX_APP_NAME by running:  npx nx show projects
+  #  Verify S3_DIST_PATH by running a local build and checking
+  #  what folder is created inside dist/apps/
+  # ────────────────────────────────────────────────────────────
+  NX_APP_NAME: 'Project-Manara-Frontend'
+  S3_DIST_PATH: 'dist/apps/Project-Manara-Frontend/browser'
+
+jobs:
+  # ════════════════════════════════════════════
+  #  JOB 1 – Install & Cache Dependencies
+  # ════════════════════════════════════════════
+  install:
+    name: 📦 Install Dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+  # ════════════════════════════════════════════
+  #  JOB 2 – Run Tests
+  # ════════════════════════════════════════════
+  test:
+    name: 🧪 Run Tests
+    runs-on: ubuntu-latest
+    needs: install
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Restore node_modules cache
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+      - name: Install dependencies (fallback if cache missed)
+        run: npm ci
+
+      # --skip-nx-cache   → forces Nx to actually run tests, never skip due to cache
+      # --watch=false     → run once and exit (required in CI)
+      # --browsers=ChromeHeadless → Chrome is pre-installed on ubuntu-latest
+      # --no-progress     → clean CI logs without progress spinners
+      - name: Run unit tests (headless Chrome)
+        run: |
+          npx nx test ${{ env.NX_APP_NAME }} \
+            --skip-nx-cache \
+            --watch=false \
+            --browsers=ChromeHeadless \
+            --no-progress \
+            --code-coverage
+
+      - name: Upload test coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+          retention-days: 7
+
+  # ════════════════════════════════════════════
+  #  JOB 3 – Build Production Bundle
+  # ════════════════════════════════════════════
+  build:
+    name: 🏗️ Build
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Restore node_modules cache
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+      - name: Install dependencies (fallback if cache missed)
+        run: npm ci
+
+      # --skip-nx-cache → forces a real production build every time
+      # --no-progress   → clean CI logs
+      - name: Build production bundle
+        run: |
+          npx nx build ${{ env.NX_APP_NAME }} \
+            --configuration=production \
+            --skip-nx-cache \
+            --no-progress
+
+      # Verify the expected output folder actually exists before uploading
+      - name: Verify build output exists
+        run: |
+          if [ ! -d "${{ env.S3_DIST_PATH }}" ]; then
+            echo "ERROR: Build output not found at ${{ env.S3_DIST_PATH }}"
+            echo "Actual dist contents:"
+            find dist/ -type f | head -30
+            exit 1
+          fi
+          echo "Build output verified at ${{ env.S3_DIST_PATH }}"
+          ls ${{ env.S3_DIST_PATH }}
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-build
+          path: ${{ env.S3_DIST_PATH }}
+          retention-days: 1
+
+  # ════════════════════════════════════════════
+  #  JOB 4 – Deploy to S3 + Invalidate CloudFront
+  #  Runs ONLY on push to main (not on PRs)
+  # ════════════════════════════════════════════
+  deploy:
+    name: 🚀 Deploy to AWS
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist-build
+          path: dist-output
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      # Sync all files EXCEPT index.html with long-lived cache headers
+      # Nx adds content hashes to filenames (main.abc123.js) so they can be
+      # cached forever — a new deploy creates new filenames automatically
+      - name: Deploy static assets to S3
+        run: |
+          aws s3 sync dist-output/ s3://${{ secrets.S3_BUCKET_NAME }} \
+            --delete \
+            --exclude "index.html" \
+            --cache-control "public, max-age=31536000, immutable"
+
+      # index.html must NEVER be long-cached — it points to all the hashed
+      # asset filenames. If cached, users won't receive new deployments.
+      - name: Deploy index.html (no-cache)
+        run: |
+          aws s3 cp dist-output/index.html s3://${{ secrets.S3_BUCKET_NAME }}/index.html \
+            --cache-control "no-cache, no-store, must-revalidate"
+
+      # Bust CloudFront edge cache so all users get the new version immediately
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
+            --paths "/*"
+
+      - name: Deployment complete
+        run: echo "Deployed successfully to https://manaraa.tech"
