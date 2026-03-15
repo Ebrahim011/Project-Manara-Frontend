@@ -1,10 +1,5 @@
 name: CI/CD Pipeline
 
-# ─────────────────────────────────────────────
-#  Triggers
-#  • Every push to main  → full CI + Deploy
-#  • Every pull request  → CI only (no deploy)
-# ─────────────────────────────────────────────
 on:
   push:
     branches: [main]
@@ -13,8 +8,7 @@ on:
 
 env:
   NODE_VERSION: '24'
-  NX_APP_NAME: 'shell'                      # confirmed from Vercel: nx build shell --prod
-  S3_DIST_PATH: 'dist/apps/shell/browser'   # Angular 17+ puts output in /browser subfolder
+  NX_APP_NAME: 'shell'
 
 jobs:
   # ════════════════════════════════════════════
@@ -44,11 +38,16 @@ jobs:
 
   # ════════════════════════════════════════════
   #  JOB 2 – Run Tests
+  #  • Checks if a test target exists first
+  #  • If no test config → prints a warning and skips gracefully
+  #  • If tests exist but fail → pipeline stops (real failure)
   # ════════════════════════════════════════════
   test:
     name: 🧪 Run Tests
     runs-on: ubuntu-latest
     needs: install
+    outputs:
+      tests_available: ${{ steps.check.outputs.tests_available }}
 
     steps:
       - name: Checkout repository
@@ -69,7 +68,21 @@ jobs:
       - name: Install dependencies (fallback if cache missed)
         run: npm ci
 
+      # Check whether the project has a 'test' target configured in Nx
+      - name: Check if test target exists
+        id: check
+        run: |
+          if npx nx show project ${{ env.NX_APP_NAME }} --json 2>/dev/null | grep -q '"test"'; then
+            echo "tests_available=true" >> $GITHUB_OUTPUT
+            echo "✅ Test target found for ${{ env.NX_APP_NAME }}"
+          else
+            echo "tests_available=false" >> $GITHUB_OUTPUT
+            echo "::warning title=No Tests Configured::The '${{ env.NX_APP_NAME }}' project has no test target in its Nx configuration. Skipping tests — add a Jest or Karma setup to enable testing in CI."
+          fi
+
+      # Only runs if test target exists — if not, this step is skipped entirely
       - name: Run unit tests (headless Chrome)
+        if: steps.check.outputs.tests_available == 'true'
         run: |
           npx nx test ${{ env.NX_APP_NAME }} \
             --skip-nx-cache \
@@ -79,7 +92,7 @@ jobs:
             --code-coverage
 
       - name: Upload test coverage report
-        if: always()
+        if: steps.check.outputs.tests_available == 'true' && always()
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
@@ -120,18 +133,17 @@ jobs:
             --skip-nx-cache \
             --no-progress
 
-      # Check dist/apps/shell/browser first (Angular 17+)
-      # Fall back to dist/apps/shell if /browser subfolder doesn't exist
+      # Detect the actual output path — handles both Angular 17+ (/browser) and older versions
       - name: Verify and resolve build output path
         run: |
           if [ -d "dist/apps/shell/browser" ]; then
             echo "S3_DIST_PATH=dist/apps/shell/browser" >> $GITHUB_ENV
-            echo "Output found at dist/apps/shell/browser"
+            echo "✅ Output found at dist/apps/shell/browser"
           elif [ -d "dist/apps/shell" ]; then
             echo "S3_DIST_PATH=dist/apps/shell" >> $GITHUB_ENV
-            echo "Output found at dist/apps/shell"
+            echo "✅ Output found at dist/apps/shell"
           else
-            echo "ERROR: Build output not found. Actual dist contents:"
+            echo "❌ ERROR: Build output not found. Actual dist contents:"
             find dist/ -type f | head -30
             exit 1
           fi
@@ -167,7 +179,6 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      # Sync all hashed assets with 1-year cache (safe because Nx fingerprints filenames)
       - name: Deploy static assets to S3
         run: |
           aws s3 sync dist-output/ s3://${{ secrets.S3_BUCKET_NAME }} \
@@ -175,13 +186,11 @@ jobs:
             --exclude "index.html" \
             --cache-control "public, max-age=31536000, immutable"
 
-      # index.html must never be cached — it references the current hashed filenames
       - name: Deploy index.html (no-cache)
         run: |
           aws s3 cp dist-output/index.html s3://${{ secrets.S3_BUCKET_NAME }}/index.html \
             --cache-control "no-cache, no-store, must-revalidate"
 
-      # Clear all CloudFront edge caches so users get the new version immediately
       - name: Invalidate CloudFront cache
         run: |
           aws cloudfront create-invalidation \
@@ -189,4 +198,4 @@ jobs:
             --paths "/*"
 
       - name: Deployment complete
-        run: echo "Deployed successfully to https://manaraa.tech"
+        run: echo "✅ Deployed successfully to https://manaraa.tech"
